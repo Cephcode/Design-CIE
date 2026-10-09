@@ -6,3 +6,6 @@ motion/frames/
 # photos des membres et musique : gardées hors du dépôt public
 motion/assets/p_*.jpg
 motion/assets/f_*.jpg
+
+# vidéo du bureau : rendus locaux
+bureau/sortie/

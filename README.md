@@ -2,12 +2,13 @@
 
 Identité visuelle du **CIE, Club Informatique de l'EPO** (École Polytechnique de Ouagadougou). Devise : **« Innovons ensemble ! »**
 
-Ce dépôt contient deux choses :
+Ce dépôt contient trois choses :
 
 | Dossier | Contenu |
 | --- | --- |
 | [`design-system/`](design-system/) | La charte : couleurs, typographies, textures, logo, éléments d'affiche et gabarits. |
 | [`motion/`](motion/) | Le code de la vidéo de présentation du club (motion design calé sur la musique). |
+| [`bureau/`](bureau/) | La vidéo de présentation du bureau et l'appel aux candidatures. Les textes se modifient dans `bureau/contenu.json`, la vidéo se refait toute seule dans GitHub Actions. |
 
 ## Démarrer vite
 

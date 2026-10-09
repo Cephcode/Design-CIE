@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bureau CIE</title>
+<style>
+@font-face { font-family: "Anton"; src: url(assets/Anton-Regular.woff2) format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url(assets/PlusJakartaSans-Variable.woff2) format("woff2"); font-weight: 200 800; font-display: block; }
+@font-face { font-family: "Caveat Brush"; src: url(assets/CaveatBrush-Regular.woff2) format("woff2"); font-weight: 400; font-display: block; }
+:root { --nuit:#122376; --elec:#2346e0; --ciel:#dfe6ff; --orange:#ee7e1e; --blanc:#ffffff; --papier:#f4f6fb; --encre:#0b1440; --doux:#4a5478; }
+html, body { margin: 0; background: #05091f; }
+#wrap { position: relative; width: 1080px; height: 1920px; transform-origin: 0 0; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--encre); font-family: "Plus Jakarta Sans", sans-serif; color: var(--blanc); }
+#cam { position: absolute; inset: 0; }
+.seg { position: absolute; inset: 0; overflow: hidden; display: none; }
+.abs { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; white-space: nowrap; }
+.bgimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.anton { font-family: "Anton", Impact, sans-serif; font-weight: 400; line-height: .92; text-transform: uppercase; }
+.jak { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; line-height: 1.08; letter-spacing: -1px; }
+.hand { font-family: "Caveat Brush", cursive; line-height: 1; }
+.cur { display: inline-block; width: .5em; height: .86em; background: var(--orange); vertical-align: -0.1em; margin-left: .06em; }
+.etq { display: inline-block; background: var(--orange); color: var(--encre); font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; padding: 18px 28px 16px; box-shadow: 10px 10px 0 var(--encre); line-height: 1; }
+.etq.nuit { background: var(--nuit); color: var(--blanc); }
+.etq.blanche { background: var(--blanc); color: var(--nuit); }
+.card { position: absolute; background: var(--blanc); padding: 18px; box-shadow: 16px 16px 0 var(--encre); transform-origin: 50% 50%; }
+.card .ph { width: 100%; height: 100%; display: block; object-fit: cover; }
+.ronde { position: absolute; border-radius: 50%; overflow: hidden; background: var(--blanc); box-shadow: 0 0 0 16px var(--blanc), 22px 22px 0 16px var(--orange); }
+.ronde .ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+.desc { white-space: normal; font-weight: 600; letter-spacing: 0; line-height: 1.32; }
+.desc .w { display: inline-block; white-space: pre; }
+#grain { position: absolute; inset: -60px; background: url(assets/grain-photoshop.png); background-size: 512px; mix-blend-mode: overlay; opacity: .13; pointer-events: none; }
+#flash, #trans { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+#trans { opacity: 1; display: none; }
+.head { position: absolute; left: 64px; right: 64px; top: 70px; display: flex; align-items: center; gap: 18px; font-weight: 700; font-size: 30px; letter-spacing: 1px; }
+.head img { width: 76px; height: 76px; border-radius: 50%; }
+.head .cpt { margin-left: auto; font-family: "Anton", Impact, sans-serif; font-size: 52px; letter-spacing: 1px; }
+.info { display: flex; align-items: stretch; margin-top: 16px; }
+.info .ic { flex: none; width: 84px; display: grid; place-items: center; background: var(--orange); color: var(--encre); }
+.info .ic svg { width: 42px; height: 42px; }
+.info .tx { display: flex; align-items: center; padding: 18px 26px; background: var(--nuit); color: var(--blanc); font-weight: 700; font-size: 38px; line-height: 1.2; white-space: normal; max-width: 760px; }
+/* aperçu dans le navigateur */
+#ui { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); display: none; gap: 10px; align-items: center; font: 600 15px/1 "Plus Jakarta Sans", sans-serif; color: #fff; background: #0b1440e6; padding: 10px 14px; border-radius: 999px; z-index: 10; }
+#ui button { font: inherit; background: #ee7e1e; color: #0b1440; border: 0; border-radius: 999px; padding: 10px 18px; cursor: pointer; font-weight: 800; }
+#ui input { width: 260px; }
+#err { position: fixed; inset: 20px; display: none; color: #fff; font: 600 18px/1.5 "Plus Jakarta Sans", sans-serif; background: #b3261e; padding: 24px; border-radius: 12px; white-space: pre-wrap; z-index: 20; }
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage"><div id="cam"></div><div id="trans"></div><div id="flash"></div><div id="grain"></div></div></div>
+<div id="ui"><button id="play">Lire</button><input id="scrub" type="range" min="0" max="100" step="0.01" value="0"><span id="clock">0.0 s</span></div>
+<div id="err"></div>
+<audio id="audio" preload="auto"></audio>
+<script>
+// =====================================================================
+//  Vidéo de présentation du bureau du CIE.
+//  Tous les textes viennent de contenu.json : ce fichier-ci n'a pas
+//  besoin d'être modifié pour changer un nom, un poste ou une photo.
+// =====================================================================
+const RENDER = location.search.includes('render');
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const pr = (t, s, d) => clamp((t - s) / d);
+const lerp = (a, b, x) => a + (b - a) * x;
+const E = {
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  outBack: x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+  outBackSoft: x => { const c1 = 1.2, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function tf(el, o) {
+  const x = o.x || 0, y = o.y || 0, r = o.r || 0, s = o.s == null ? 1 : o.s;
+  const sx = o.sx == null ? s : o.sx, sy = o.sy == null ? s : o.sy;
+  el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) rotate(${r.toFixed(3)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
+  const op = o.o == null ? 1 : o.o;
+  el.style.opacity = op;
+  el.style.visibility = op <= 0.001 ? 'hidden' : 'visible';
+}
+
+let C, P, FIRST, SYNC, N, M0, END, DUR;
+const B = i => FIRST + i * P + SYNC;   // instant du temps n°i
+const beatAt = t => (t - FIRST - SYNC) / P;
+const blink = t => { const b = beatAt(t) * 2; return b - Math.floor(b) < 0.55; };
+function pulse(t, every = 4, k = 6) { const b = beatAt(t); const i = Math.floor(b / every) * every; return Math.exp(-(t - B(i)) * k); }
+function rise(el, t, s, d = 0.35, dist = 120) { const p = E.outExpo(pr(t, s, d)); tf(el, { y: (1 - p) * dist, o: t < s ? 0 : clamp(pr(t, s, 0.08)) }); }
+function slam(el, t, s, from = 1.6, d = 0.32, extra = {}) { const p = pr(t, s, d); tf(el, Object.assign({ s: lerp(from, 1, E.outBack(p)), o: t < s ? 0 : clamp(p * 6) }, extra)); }
+function typeIn(el, full, t, s, per) { const n = t < s ? 0 : Math.min(full.length, Math.floor((t - s) / per) + 1); el.textContent = full.slice(0, n); return n; }
+function brush(el, t, s, d = 0.4) { const p = E.outCubic(pr(t, s, d)); el.style.clipPath = `inset(0 ${(100 - p * 100).toFixed(2)}% 0 0)`; el.style.visibility = t < s ? 'hidden' : 'visible'; }
+function shake(t, hits, amp) { let x = 0, y = 0; for (const h of hits) { if (t < h) continue; const k = Math.exp(-(t - h) * 12) * amp; x += Math.sin((t - h) * 95) * k; y += Math.cos((t - h) * 71) * k; } return { x, y }; }
+function wordsIn(container, t, s, step = 0.07) {
+  container.querySelectorAll('.w').forEach((w, i) => { const p = E.outExpo(pr(t, s + i * step, 0.3)); tf(w, { y: (1 - p) * 40, o: t < s + i * step ? 0 : clamp(p * 3) }); });
+}
+const wordSpans = text => esc(text).split(/(\s+)/).map(w => /^\s+$/.test(w) ? w : `<span class="w">${w}</span>`).join('');
+const fill = (s) => String(s ?? '').replace(/\{n\}/g, N).replace(/\{mandat\}/g, C.mandat).replace(/\{prochain_mandat\}/g, C.prochain_mandat);
+// réduit la taille d'un texte jusqu'à ce qu'il tienne
+function textW(el) { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; }
+function fit(el, maxW, maxFont, minFont, maxH) {
+  let f = maxFont; el.style.fontSize = f + 'px';
+  const wraps = getComputedStyle(el).whiteSpace !== 'nowrap' && getComputedStyle(el).whiteSpace !== 'pre';
+  const tooBig = () => (!wraps && textW(el) > maxW) || (wraps && el.scrollWidth > el.clientWidth + 2) || (maxH && el.scrollHeight > maxH);
+  while (f > minFont && tooBig()) { f -= 2; el.style.fontSize = f + 'px'; }
+}
+const slug = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const ICONS = {
+  calendrier: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  lieu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  contact: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 10h8"/></svg>',
+  horloge: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+};
+// silhouette quand la photo n'est pas encore là
+const SIL = (bg = '#dfe6ff', fg = '#9aa6cc') => `<svg class="ph" viewBox="0 0 640 800" preserveAspectRatio="xMidYMid slice"><rect width="640" height="800" fill="${bg}"/><circle cx="320" cy="300" r="128" fill="${fg}"/><path d="M60 800V650c0-120 90-180 200-190h120c110 10 200 70 200 190v150z" fill="${fg}"/></svg>`;
+const photo = m => m.photo ? `<img class="ph" src="${esc(m.photo)}" style="object-position:${esc(m.cadrage || '50% 30%')}" alt="">` : SIL();
+const STYLES = ['bleu', 'papier', 'nuit', 'code'];
+
+// ---------------------------------------------------------------------
+//  Construction des scènes
+// ---------------------------------------------------------------------
+const segs = {};
+function seg(id, bg, html) { const d = document.createElement('section'); d.className = 'seg'; d.id = id; d.style.background = bg; d.innerHTML = html; d.style.display = 'block'; $('cam').appendChild(d); segs[id] = d; return d; }
+function head(k, dark) {
+  const col = dark ? 'var(--blanc)' : 'var(--encre)';
+  return `<div class="head" style="color:${col}"><img src="assets/logo-cie-pastille.png" alt=""><span>BUREAU ${esc(C.mandat)}</span><span class="cpt">${String(k + 1).padStart(2, '0')}<span style="opacity:.45"> / ${String(N).padStart(2, '0')}</span></span></div>`;
+}
+
+function build() {
+  // --- intro : terminal
+  const lines = C.membres.map(m => `<div class="ln" style="opacity:0"><i style="display:inline-block;width:16px;height:16px;background:var(--orange);margin-right:22px;vertical-align:2px"></i>${esc(slug(m.poste) || 'membre')}.md</div>`).join('');
+  seg('intro', 'var(--encre)', `
+    <div class="abs jak" id="iCmd" style="left:84px;top:520px;font-size:84px;transform-origin:0 50%"><span style="color:var(--orange)">&gt;&nbsp;</span><span id="iCmdTx"></span><span class="cur" id="iCur"></span></div>
+    <div class="abs jak" id="iList" style="left:96px;top:680px;font-size:42px;font-weight:600;letter-spacing:0;line-height:1.5;color:var(--ciel)">${lines}</div>
+    <div class="abs jak" id="iPhrase" style="left:84px;top:1460px;font-size:76px;white-space:normal;width:920px">${wordSpans(fill(C.intro.phrase))}</div>`);
+  // --- titre
+  seg('titre', 'var(--elec)', `
+    <img class="bgimg" src="assets/fond-circuit-bleu.svg" alt="">
+    <div class="abs" id="tDisc" style="left:240px;top:250px;width:600px;height:600px;border-radius:50%;background:var(--nuit)"></div>
+    <img class="abs" id="tLogo" src="assets/logo-cie-pastille.png" style="left:340px;top:350px;width:400px;height:400px;border-radius:50%;box-shadow:12px 12px 0 var(--encre)" alt="">
+    <div class="abs anton" id="tTitre" style="left:0;width:1080px;text-align:center;top:930px;font-size:300px">${esc(C.intro.titre)}</div>
+    <div class="abs etq" id="tMandat" style="top:1250px;font-size:56px">${esc(C.mandat.replace('-', ' / '))}</div>
+    <div class="abs jak desc" id="tSous" style="left:110px;width:860px;top:1420px;font-size:46px;text-align:center">${wordSpans(fill(C.intro.sous_titre))}</div>`);
+  // --- membres
+  C.membres.forEach((m, k) => {
+    const st = STYLES.includes(m.style) ? m.style : STYLES[k % 4];
+    m._style = st;
+    const desc = `<div class="abs jak desc dsc" style="font-size:44px">${wordSpans(m.description)}</div>`;
+    const nom = `<div class="abs anton nom">${esc(m.nom)}</div>`;
+    const poste = `<div class="abs etq pst" style="font-size:44px"><span class="pt"></span></div>`;
+    let html = '';
+    if (st === 'bleu') html = `<img class="bgimg" src="assets/fond-circuit-bleu.svg" alt="">${head(k, true)}
+      <div class="card crd" style="left:230px;top:230px;width:584px;height:730px">${photo(m)}</div>
+      ${poste}<img class="abs brs" src="assets/trait-pinceau-orange.svg" style="width:820px" alt="">${nom}${desc}`;
+    if (st === 'papier') html = `<img class="bgimg" src="assets/fond-grille-papier.svg" alt="">${head(k, false)}
+      <div class="abs dsk" style="left:430px;top:900px;width:760px;height:760px;border-radius:50%;background:var(--nuit)"></div>
+      <div class="card crd" style="left:420px;top:880px;width:520px;height:650px">${photo(m)}</div>
+      ${poste}<img class="abs brs" src="assets/trait-pinceau-bleu.svg" style="width:760px" alt="">${nom}${desc}`;
+    if (st === 'nuit') html = `<img class="bgimg" src="assets/fond-circuit-nuit.svg" alt="">${head(k, true)}
+      <div class="abs anton big" style="left:0;width:1080px;text-align:center;top:150px;font-size:760px;color:transparent;-webkit-text-stroke:5px #2346e0">${String(k + 1).padStart(2, '0')}</div>
+      <div class="ronde crd" style="left:290px;top:300px;width:500px;height:500px">${photo(m)}</div>
+      ${poste}<img class="abs brs" src="assets/trait-pinceau-orange.svg" style="width:760px" alt="">${nom}${desc}`;
+    if (st === 'code') html = `${head(k, true)}
+      <div class="abs win" style="left:64px;top:220px;width:952px;height:440px;background:var(--nuit);transform-origin:50% 0">
+        <div style="height:70px;background:#0e1b5e;display:flex;align-items:center;gap:14px;padding:0 30px"><i style="width:20px;height:20px;border-radius:50%;background:var(--orange)"></i><i style="width:20px;height:20px;border-radius:50%;background:var(--ciel)"></i><i style="width:20px;height:20px;border-radius:50%;background:var(--blanc)"></i><span style="margin-left:18px;font-weight:600;font-size:28px;color:var(--ciel)">bureau.cie</span></div>
+        <div class="code jak" style="position:absolute;left:44px;top:104px;right:30px;font-size:46px;font-weight:700;letter-spacing:0;line-height:72px;white-space:pre"></div>
+      </div>
+      <div class="card crd" style="left:110px;top:760px;width:470px;height:590px">${photo(m)}</div>
+      ${poste}${nom}${desc}`;
+    const bg = { bleu: 'var(--elec)', papier: 'var(--papier)', nuit: 'var(--nuit)', code: 'var(--encre)' }[st];
+    const d = seg('m' + k, bg, html);
+    // mise en page du texte selon le style
+    const el = sel => d.querySelector(sel);
+    const N_ = el('.nom'), D_ = el('.dsc'), P_ = el('.pst');
+    el('.pst .pt').textContent = m.poste;
+    if (st === 'bleu') {
+      Object.assign(P_.style, { left: '96px', top: '1040px' });
+      Object.assign(N_.style, { left: '84px', top: '1150px', color: 'var(--blanc)' }); fit(N_, 912, 190, 90);
+      Object.assign(el('.brs').style, { left: '70px', top: (1150 + N_.offsetHeight - 40) + 'px' });
+      Object.assign(D_.style, { left: '90px', width: '900px', top: (1150 + N_.offsetHeight + 60) + 'px', color: 'var(--blanc)' }); fit(D_, 900, 46, 32, 260);
+    }
+    if (st === 'papier') {
+      Object.assign(P_.style, { left: '96px', top: '230px' }); P_.classList.add('nuit');
+      Object.assign(N_.style, { left: '84px', top: '340px', color: 'var(--elec)' }); fit(N_, 912, 180, 90);
+      Object.assign(el('.brs').style, { left: '70px', top: (340 + N_.offsetHeight - 40) + 'px' });
+      Object.assign(D_.style, { left: '90px', width: '900px', top: (340 + N_.offsetHeight + 50) + 'px', color: 'var(--encre)' }); fit(D_, 900, 44, 32, 220);
+      // la carte photo descend si le texte est long
+      const bottom = 340 + N_.offsetHeight + 50 + D_.offsetHeight + 60;
+      if (bottom > 880) { el('.crd').style.top = bottom + 'px'; el('.dsk').style.top = (bottom + 20) + 'px'; }
+    }
+    if (st === 'nuit') {
+      P_.style.top = '920px'; P_.style.left = '0px';
+      Object.assign(N_.style, { left: '0', width: '1080px', textAlign: 'center', top: '1040px', color: 'var(--blanc)' }); fit(N_, 960, 180, 90);
+      Object.assign(el('.brs').style, { left: '160px', top: (1040 + N_.offsetHeight - 36) + 'px' });
+      Object.assign(D_.style, { left: '110px', width: '860px', top: (1040 + N_.offsetHeight + 70) + 'px', color: 'var(--ciel)', textAlign: 'center' }); fit(D_, 860, 46, 32, 260);
+    }
+    if (st === 'code') {
+      Object.assign(P_.style, { left: '560px', top: '1400px' });
+      Object.assign(N_.style, { left: '84px', top: '1430px', color: 'var(--blanc)' });
+      N_.style.display = 'none';
+      Object.assign(D_.style, { left: '620px', width: '380px', top: '780px', color: 'var(--blanc)', whiteSpace: 'normal' }); fit(D_, 380, 44, 30, 560);
+      Object.assign(P_.style, { left: '96px', top: '1430px' });
+      // ligne de code : poste et nom
+      m._code = [
+        [['k', 'const '], ['v', 'membre'], ['w', ' = {']],
+        [['w', '  poste: '], ['s', `"${m.poste}"`], ['w', ',']],
+        [['w', '  nom: '], ['s', `"${m.nom}"`], ['w', ',']],
+        [['w', '};']],
+      ];
+      const codeEl = el('.code');
+      codeEl.innerHTML = m._code.map(l => l.map(([k, s]) => s).join('')).join('\n');
+      fit(codeEl, 878, 46, 26);
+      m._codeFont = codeEl.style.fontSize;
+      Object.assign(N_.style, { display: '' , left: '84px', top: '1540px' }); fit(N_, 912, 150, 80);
+    }
+    if (st === 'nuit') { const w = P_.offsetWidth; P_.style.left = ((1080 - w) / 2) + 'px'; }
+  });
+  // --- merci
+  const cols = N <= 8 ? 4 : N <= 15 ? 5 : 6, tw = Math.floor((1080 - 128 - (cols - 1) * 20) / cols), th = Math.round(tw * 1.25);
+  const tiles = C.membres.map((m, k) => `<div class="card tile" style="padding:8px;box-shadow:8px 8px 0 var(--encre);left:${64 + (k % cols) * (tw + 20)}px;top:${700 + Math.floor(k / cols) * (th + 70)}px;width:${tw - 16}px;height:${th - 16}px">${photo(m)}<div class="jak" style="position:absolute;left:0;right:0;top:${th - 4}px;font-size:22px;font-weight:700;color:var(--blanc);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0">${esc(m.nom)}</div></div>`).join('');
+  seg('merci', 'var(--nuit)', `<img class="bgimg" src="assets/fond-circuit-nuit.svg" alt="">
+    <div class="abs anton" id="mTitre" style="left:0;width:1080px;text-align:center;top:250px;font-size:280px">${esc(C.merci.titre)}</div>
+    <div class="abs hand" id="mPhrase" style="left:0;width:1080px;text-align:center;top:540px;font-size:92px;color:var(--orange)">${esc(fill(C.merci.phrase))}</div>${tiles}`);
+  // --- appel : terminal + et toi ?
+  seg('toi', 'var(--encre)', `
+    <div class="abs jak" id="aCmd" style="left:84px;top:420px;font-size:56px;transform-origin:0 50%"><span style="color:var(--orange)">&gt;&nbsp;</span><span id="aCmdTx"></span><span class="cur" id="aCur"></span></div>
+    <div class="abs jak" id="aRes" style="left:96px;top:520px;font-size:44px;font-weight:600;letter-spacing:0;color:var(--orange)">${esc(fill(C.appel.resultat))}</div>
+    <div class="abs anton" id="aToi" style="left:0;width:1080px;text-align:center;top:760px;font-size:300px">${esc(C.appel.titre)}</div>
+    <div class="abs jak desc" id="aPhr" style="left:110px;width:860px;top:1120px;font-size:58px;text-align:center;font-weight:800">${wordSpans(fill(C.appel.phrase))}</div>`);
+  // --- appel : candidatures
+  const infos = (C.appel.infos || []).map(i => `<div class="info"><span class="ic">${ICONS[i.icone] || ICONS.calendrier}</span><span class="tx">${esc(fill(i.texte))}</span></div>`).join('');
+  seg('cand', 'var(--elec)', `<img class="bgimg" src="assets/fond-circuit-bleu.svg" alt="">
+    <div class="abs etq" id="cEtq" style="left:84px;top:300px;font-size:52px">${esc(C.appel.etiquette)}</div>
+    <div class="abs anton" id="cTitre" style="left:84px;top:450px;width:912px;white-space:normal;font-size:150px;line-height:.95">${esc(fill(C.appel.grand_titre)).replace(/(\d{4}-\d{4})/g, '<span style="white-space:nowrap">$1</span>')}</div>
+    <div class="abs" id="cInfos" style="left:84px;top:1180px">${infos}</div>
+    <div class="abs hand" id="cNote" style="left:auto;right:70px;top:1560px;font-size:96px;transform-origin:100% 50%">${esc(fill(C.appel.note))}</div>`);
+  // --- fin
+  seg('fin', 'var(--papier)', `<img class="bgimg" src="assets/fond-grille-papier.svg" alt="">
+    <img class="abs" id="fLogo" src="assets/logo-cie-pastille.png" style="left:340px;top:330px;width:400px;height:400px;border-radius:50%;box-shadow:14px 14px 0 var(--encre)" alt="">
+    <div class="abs anton" id="fCie" style="left:0;width:1080px;text-align:center;top:800px;font-size:210px;color:var(--elec)">CIE</div>
+    <div class="abs jak" id="fClub" style="left:0;width:1080px;text-align:center;top:1020px;font-size:44px;font-weight:700;letter-spacing:0;color:var(--encre)">${esc(C.club)}</div>
+    <div class="abs hand" id="fDev" style="left:0;top:1150px;font-size:124px;color:var(--elec);transform-origin:0 50%"><span id="fDevTx">${esc(C.devise)}</span><span class="cur" id="fCur" style="height:.62em;vertical-align:.02em"></span></div>
+    <div class="abs etq" id="fBtn" style="top:1440px;font-size:64px">${esc(C.appel.bouton)}</div>`);
+  // mises à l'échelle des textes longs
+  fit($('cTitre'), 912, 150, 80, 640);
+  fit($('aToi'), 1000, 300, 140);
+  fit($('tTitre'), 1000, 300, 140);
+  for (const k in segs) segs[k].style.display = 'none';
+}
+
+// ---------------------------------------------------------------------
+//  Rendu d'une image à l'instant t (en secondes depuis le début)
+// ---------------------------------------------------------------------
+function only(id) { for (const k in segs) segs[k].style.display = k === id ? 'block' : 'none'; }
+function setTrans(kind, p) {
+  const tr = $('trans');
+  if (!kind || p <= 0) { tr.style.display = 'none'; return; }
+  tr.style.display = 'block';
+  tr.style.clipPath = 'none'; tr.style.transform = 'none'; tr.style.inset = '0'; tr.style.backgroundImage = 'none';
+  if (kind === 'bleu') { tr.style.background = 'var(--elec)'; tr.style.inset = '-300px'; tr.style.transform = `translateY(${lerp(2400, 0, E.inOutCubic(p))}px) rotate(-8deg)`; }
+  if (kind === 'papier') { tr.style.background = 'var(--papier)'; tr.style.inset = '-200px'; tr.style.transform = `translateX(${lerp(1600, 0, E.outExpo(p))}px) rotate(${lerp(14, 0, p)}deg)`; }
+  if (kind === 'nuit' || kind === 'merci') { tr.style.background = 'var(--nuit)'; tr.style.clipPath = `circle(${(E.inCubic(p) * 1150).toFixed(1)}px at 540px 960px)`; }
+  if (kind === 'code' || kind === 'toi') { tr.style.background = 'var(--encre)'; tr.style.inset = '-300px'; tr.style.transform = `translateX(${lerp(-1800, 0, E.inOutCubic(p))}px) rotate(6deg)`; }
+  if (kind === 'cand') { tr.style.background = 'var(--elec)'; tr.style.inset = '-300px'; tr.style.transform = `translateY(${lerp(-2400, 0, E.inOutCubic(p))}px) rotate(8deg)`; }
+  if (kind === 'fin') { tr.style.background = 'var(--papier)'; tr.style.inset = '-300px'; tr.style.transform = `translateY(${lerp(2400, 0, E.inOutCubic(p))}px) rotate(-6deg)`; }
+}
+const TR = 0.34; // durée d'un volet de transition
+
+function renderIntro(t) {
+  only('intro');
+  const cmd = C.intro.commande;
+  const n = typeIn($('iCmdTx'), cmd, t, B(1), P / 6);
+  $('iCur').style.visibility = (n > 0 && n < cmd.length) || blink(t) ? 'visible' : 'hidden';
+  const lines = $('iList').children, L = lines.length;
+  const step = Math.min(P / 2, (7 * P) / Math.max(1, L));
+  for (let i = 0; i < L; i++) {
+    const s = B(3) + i * step, p = pr(t, s, 0.12);
+    lines[i].style.opacity = t < s ? 0 : p;
+    lines[i].style.transform = `translateX(${(1 - E.outCubic(p)) * -30}px)`;
+    // balayage orange pendant la montée
+    const hot = t >= B(12) && Math.floor(beatAt(t) * 4) % L === i;
+    lines[i].style.color = hot ? 'var(--orange)' : '';
+  }
+  wordsIn($('iPhrase'), t, B(10), 0.09);
+  const z = E.inCubic(pr(t, B(15), P));
+  tf($('iCmd'), { s: 1 + z * 0.05 });
+  const amp = E.inCubic(pr(t, B(12), 4 * P)) * 7;
+  $('cam').style.transform = `translate(${(Math.sin(t * 80) * amp).toFixed(1)}px,${(Math.cos(t * 61) * amp).toFixed(1)}px) scale(${1 + z * 0.08})`;
+}
+
+function renderTitre(t) {
+  only('titre');
+  $('flash').style.background = '#ffffff';
+  $('flash').style.opacity = (1 - pr(t, B(16), 0.16)).toFixed(3);
+  slam($('tTitre'), t, B(16), 1.7, 0.34);
+  if (t > B(16) + 0.34) tf($('tTitre'), { s: 1 + pulse(t) * 0.035 });
+  tf($('tDisc'), { s: E.outBack(pr(t, B(16.5), 0.45)) });
+  const lp = pr(t, B(17), 0.5);
+  tf($('tLogo'), { s: t < B(17) ? 0 : lerp(2.2, 1, E.outBack(lp)), r: lerp(-200, 0, E.outCubic(lp)) });
+  const mw = $('tMandat').offsetWidth;
+  slam($('tMandat'), t, B(18), 1.6, 0.3, { x: 540 - mw / 2, r: -3 });
+  wordsIn($('tSous'), t, B(19), 0.07);
+  const sh = shake(t, [B(16), B(18)], 14);
+  $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+}
+
+function renderMembre(k, t) {
+  const m = C.membres[k], d = segs['m' + k], st = m._style, s0 = 24 + 8 * k;
+  only('m' + k);
+  const q = sel => d.querySelector(sel);
+  const crd = q('.crd'), pst = q('.pst'), nom = q('.nom'), dsc = q('.dsc'), brs = q('.brs');
+  const drift = (t - B(s0)) / (8 * P);
+  // photo
+  if (st === 'nuit') {
+    const p = pr(t, B(s0), 0.55);
+    tf(crd, { s: lerp(0.2, 1, E.outBack(p)) * (1 + pulse(t) * 0.02), r: lerp(-160, 0, E.outCubic(p)) });
+    const big = q('.big'); tf(big, { y: lerp(200, 0, E.outExpo(pr(t, B(s0), 0.6))), s: 1 + drift * 0.06, o: 0.9 });
+  } else {
+    const rot = { bleu: -4, papier: 5, code: -6 }[st];
+    const p = pr(t, B(s0 + (st === 'code' ? 2 : 0)), 0.34);
+    tf(crd, { s: lerp(1.5, 1, E.outBack(p)) * (1 + pulse(t) * 0.015), r: lerp(rot + 14, rot, E.outBack(p)) + drift * 1.2, o: t < B(s0 + (st === 'code' ? 2 : 0)) ? 0 : 1 });
+  }
+  if (st === 'papier') tf(q('.dsk'), { s: E.outBack(pr(t, B(s0 + 0.5), 0.45)) });
+  // poste : tapé lettre par lettre
+  const ps = B(s0 + 1);
+  const n = typeIn(q('.pst .pt'), m.poste, t, ps, Math.min(0.045, (P * 1.2) / Math.max(1, m.poste.length)));
+  tf(pst, { r: st === 'nuit' ? 0 : -3, s: lerp(1.25, 1, E.outBack(pr(t, ps, 0.25))), o: t < ps ? 0 : 1 });
+  // nom
+  if (st === 'code') {
+    const win = q('.win'), cs = B(s0);
+    tf(win, { sy: E.outBack(pr(t, cs - 0.05, 0.3)), sx: lerp(0.3, 1, E.outCubic(pr(t, cs - 0.05, 0.3))) });
+    const code = m._code, total = code.reduce((a, l) => a + l.reduce((b, s) => b + s[1].length, 0), 0);
+    const chars = t < cs ? 0 : Math.min(total, Math.floor((t - cs) / ((1.8 * P) / total)) + 1);
+    let left = chars, html = '';
+    code.forEach((l, li) => { for (const [k2, s] of l) { if (left <= 0) break; const part = s.slice(0, left); left -= part.length; const col = { k: 'var(--orange)', v: 'var(--ciel)', s: '#ffd6ad', w: 'var(--blanc)' }[k2]; html += `<span style="color:${col}">${esc(part)}</span>`; } if (li < code.length - 1 && left > 0) html += '\n'; });
+    q('.code').innerHTML = html + (chars < total || blink(t) ? '<span class="cur" style="height:.9em"></span>' : '');
+    slam(nom, t, B(s0 + 3), 1.4, 0.3);
+    wordsIn(dsc, t, B(s0 + 3.5), 0.07);
+  } else {
+    rise(nom, t, B(s0 + 2), 0.38, 150);
+    if (brs) brush(brs, t, B(s0 + 2.5), 0.4);
+    wordsIn(dsc, t, B(s0 + 3), 0.07);
+  }
+  const sh = shake(t, [B(s0)], 10);
+  $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+}
+
+function renderMerci(t, s0) {
+  only('merci');
+  slam($('mTitre'), t, B(s0), 1.6, 0.34);
+  if (t > B(s0) + 0.34) tf($('mTitre'), { s: 1 + pulse(t) * 0.03 });
+  slam($('mPhrase'), t, B(s0 + 1), 1.4, 0.28, { r: -4 });
+  const tiles = segs.merci.querySelectorAll('.tile');
+  const step = Math.min(0.12, (2 * P) / Math.max(1, tiles.length));
+  tiles.forEach((el, i) => { const s = B(s0 + 1.5) + i * step, p = pr(t, s, 0.3); tf(el, { s: lerp(0.3, 1, E.outBack(p)), r: lerp(20, (i % 2 ? 3 : -3), E.outCubic(p)), o: t < s ? 0 : 1 }); });
+}
+function renderToi(t, s0) {
+  only('toi');
+  const cmd = fill(C.appel.commande);
+  const n = typeIn($('aCmdTx'), cmd, t, B(s0), (1.6 * P) / Math.max(1, cmd.length));
+  $('aCur').style.visibility = (n < cmd.length) || blink(t) ? 'visible' : 'hidden';
+  tf($('aRes'), { o: t < B(s0 + 2) ? 0 : 1, x: (1 - E.outCubic(pr(t, B(s0 + 2), 0.2))) * -30 });
+  slam($('aToi'), t, B(s0 + 4), 1.8, 0.34);
+  if (t > B(s0 + 4) + 0.34) tf($('aToi'), { s: 1 + pulse(t) * 0.04 });
+  wordsIn($('aPhr'), t, B(s0 + 5), 0.08);
+  const sh = shake(t, [B(s0 + 4)], 18);
+  $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+}
+function renderCand(t, s0) {
+  only('cand');
+  slam($('cEtq'), t, B(s0), 1.6, 0.3, { r: -3 });
+  rise($('cTitre'), t, B(s0 + 1), 0.4, 160);
+  [...$('cInfos').children].forEach((el, i) => { const s = B(s0 + 2.5 + i), p = E.outExpo(pr(t, s, 0.35)); tf(el, { x: (1 - p) * -900, o: t < s ? 0 : 1 }); });
+  slam($('cNote'), t, B(s0 + 5), 1.5, 0.28, { r: -5 });
+}
+function renderFin(t, s0) {
+  only('fin');
+  const lp = pr(t, B(s0), 0.6);
+  tf($('fLogo'), { s: lerp(0.4, 1, E.outBackSoft(lp)) * (1 + Math.sin((t - B(s0)) * 1.6) * 0.008), r: lerp(-30, 0, E.outCubic(lp)), o: t < B(s0) ? 0 : 1 });
+  tf($('fCie'), { y: (1 - E.outExpo(pr(t, B(s0 + 0.5), 0.4))) * 120, o: t < B(s0 + 0.5) ? 0 : 1 });
+  tf($('fClub'), { y: (1 - E.outCubic(pr(t, B(s0 + 1), 0.4))) * 40, o: clamp(pr(t, B(s0 + 1), 0.3)) });
+  const dp = E.inOutCubic(pr(t, B(s0 + 1.5), 1.6 * P));
+  $('fDevTx').style.clipPath = `inset(-20% ${(100 - dp * 100).toFixed(2)}% -20% 0)`;
+  tf($('fDev'), { x: (1080 - $('fDev').offsetWidth) / 2, r: -4, o: t < B(s0 + 1.5) ? 0 : 1 });
+  $('fCur').style.visibility = t >= B(s0 + 3.1) && blink(t) ? 'visible' : 'hidden';
+  const bw = $('fBtn').offsetWidth;
+  slam($('fBtn'), t, B(s0 + 3), 1.6, 0.3, { x: 540 - bw / 2, r: -3 });
+  $('flash').style.background = '#0b1440';
+  $('flash').style.opacity = pr(t, DUR - 1.2, 1.2).toFixed(3);
+}
+
+function render(t) {
+  const f = Math.floor(Math.round(t * 30) / 3);
+  $('grain').style.backgroundPosition = `${(f * 137) % 512}px ${(f * 263) % 512}px`;
+  $('flash').style.opacity = 0;
+  $('cam').style.transform = 'none';
+  setTrans(null, 0);
+  // découpage en temps (beats)
+  // intro 0-16, titre 16-24, membres 8 temps chacun, merci 4, et toi 8, candidatures 8, fin 12
+  const bounds = [['titre', 16], ...C.membres.map((m, k) => [m._style, 24 + 8 * k]), ['merci', M0], ['toi', M0 + 4], ['cand', M0 + 12], ['fin', M0 + 20]];
+  for (const [kind, b] of bounds) { if (kind !== 'titre' && t >= B(b) - TR && t < B(b)) { setTrans(kind, pr(t, B(b) - TR, TR)); } }
+  if (t < B(16)) return renderIntro(t);
+  if (t < B(24)) return renderTitre(t);
+  if (t < B(M0)) { const k = Math.min(N - 1, Math.floor((beatAt(t) - 24) / 8)); return renderMembre(k, t); }
+  if (t < B(M0 + 4)) return renderMerci(t, M0);
+  if (t < B(M0 + 12)) return renderToi(t, M0 + 4);
+  if (t < B(M0 + 20)) return renderCand(t, M0 + 12);
+  return renderFin(t, M0 + 20);
+}
+
+// ---------------------------------------------------------------------
+//  Démarrage
+// ---------------------------------------------------------------------
+async function init() {
+  try {
+    const r = await fetch('contenu.json', { cache: 'no-store' });
+    C = await r.json();
+  } catch (e) {
+    $('err').style.display = 'block';
+    $('err').textContent = "Impossible de lire contenu.json.\n\n" + e.message + "\n\nVérifie qu'il ne manque pas une virgule ou un guillemet (par exemple sur jsonlint.com), et ouvre la page via un serveur local : python3 -m http.server";
+    throw e;
+  }
+  const mu = C.musique || {};
+  P = 60 / (mu.tempo_bpm || 82.5); FIRST = mu.premier_temps_secondes ?? 0.0376; SYNC = mu.decalage_image_secondes ?? -0.01;
+  N = C.membres.length; M0 = 24 + 8 * N; END = M0 + 32; DUR = +(B(END) + 0.4).toFixed(2);
+  await document.fonts.ready;
+  build();
+  await Promise.all([...document.images].map(im => im.complete ? 1 : new Promise(r => { im.onload = im.onerror = r; })));
+  window.render = render; window.DUR = DUR; window.MUSIQUE = mu;
+  render(0);
+  window.READY = true;
+  if (!RENDER) preview();
+}
+function preview() {
+  const fit = () => { const s = Math.min(innerWidth / 1080, (innerHeight - 70) / 1920); $('wrap').style.transform = `scale(${s})`; $('wrap').style.marginLeft = ((innerWidth - 1080 * s) / 2) + 'px'; };
+  fit(); addEventListener('resize', fit);
+  $('ui').style.display = 'flex';
+  const a = $('audio'), mu = window.MUSIQUE; a.src = mu.fichier || 'musique.mp3';
+  const debut = mu.debut_secondes || 0; let playing = false, t0 = 0, start = 0;
+  const now = () => playing ? (a.readyState > 1 && !a.paused ? a.currentTime - debut : (performance.now() - t0) / 1000 + start) : start;
+  $('scrub').max = DUR;
+  $('play').onclick = () => {
+    playing = !playing; $('play').textContent = playing ? 'Pause' : 'Lire';
+    if (playing) { t0 = performance.now(); a.currentTime = debut + start; a.play().catch(() => {}); } else { start = now(); a.pause(); }
+  };
+  $('scrub').oninput = e => { start = +e.target.value; t0 = performance.now(); if (playing) a.currentTime = debut + start; render(start); };
+  (function loop() { const t = now(); if (playing) { if (t >= DUR) { playing = false; start = 0; a.pause(); $('play').textContent = 'Lire'; } render(Math.min(t, DUR)); $('scrub').value = t; } $('clock').textContent = t.toFixed(1) + ' s / ' + DUR.toFixed(0) + ' s'; requestAnimationFrame(loop); })();
+}
+init();
+</script>
+</body>
+</html>

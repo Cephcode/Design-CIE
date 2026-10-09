@@ -1,0 +1,127 @@
+{
+  "_aide": "Modifie seulement le texte entre guillemets. Garde les guillemets, les deux-points et les virgules. Pour ajouter un membre, copie un bloc { ... } de la liste membres. Photos : dépose-les dans bureau/photos/ puis écris leur nom dans photo (ex : photos/president.jpg). Voir bureau/README.md.",
+
+  "club": "Club Informatique de l'EPO",
+  "devise": "Innovons ensemble !",
+  "mandat": "2025-2026",
+  "prochain_mandat": "2026-2027",
+
+  "intro": {
+    "commande": "ls bureau/",
+    "phrase": "{n} membres. Une seule équipe.",
+    "titre": "Le bureau",
+    "sous_titre": "Ceux qui ont fait vivre le club cette année"
+  },
+
+  "membres": [
+    {
+      "poste": "Président",
+      "nom": "Prénom Nom",
+      "description": "Porte la vision du club et fait avancer toute l'équipe dans la même direction.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Vice-président",
+      "nom": "Prénom Nom",
+      "description": "Épaule le président et garde le cap quand tout s'accélère.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Secrétaire",
+      "nom": "Prénom Nom",
+      "description": "Comptes rendus, listes, annonces : la mémoire du club, c'est ici.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Chargé de l'organisation",
+      "nom": "Prénom Nom",
+      "description": "Salles, horaires, matériel : chaque événement est prêt avant tout le monde.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Chargé des relations extérieures",
+      "nom": "Prénom Nom",
+      "description": "Va chercher les partenaires, les experts invités et les portes qui s'ouvrent.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Chargé de la communication",
+      "nom": "Le codeur fou",
+      "description": "Affiches, vidéos, réseaux : fait parler le club. Cette vidéo, c'est lui.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Membre du bureau",
+      "nom": "Prénom Nom",
+      "description": "Écris ici une phrase sur ce membre : ce qu'il fait au club, ce qu'il aime coder.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Membre du bureau",
+      "nom": "Prénom Nom",
+      "description": "Écris ici une phrase sur ce membre : ce qu'il fait au club, ce qu'il aime coder.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Membre du bureau",
+      "nom": "Prénom Nom",
+      "description": "Écris ici une phrase sur ce membre : ce qu'il fait au club, ce qu'il aime coder.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    },
+    {
+      "poste": "Membre du bureau",
+      "nom": "Prénom Nom",
+      "description": "Écris ici une phrase sur ce membre : ce qu'il fait au club, ce qu'il aime coder.",
+      "photo": "",
+      "cadrage": "50% 30%",
+      "style": ""
+    }
+  ],
+
+  "merci": {
+    "titre": "Merci",
+    "phrase": "au bureau {mandat}"
+  },
+
+  "appel": {
+    "commande": "candidats --bureau {prochain_mandat}",
+    "resultat": "0 résultat pour l'instant",
+    "titre": "Et toi ?",
+    "phrase": "Le prochain bureau, c'est peut-être toi.",
+    "etiquette": "Candidatures ouvertes",
+    "grand_titre": "Présente-toi aux élections du bureau {prochain_mandat}",
+    "infos": [
+      { "icone": "calendrier", "texte": "Élections : date à préciser" },
+      { "icone": "contact", "texte": "Dépose ta candidature auprès du bureau" }
+    ],
+    "note": "on compte sur toi !",
+    "bouton": "Présente-toi !"
+  },
+
+  "musique": {
+    "_aide": "Ne change ces valeurs que si tu changes de musique.",
+    "fichier": "musique.mp3",
+    "debut_secondes": 0,
+    "tempo_bpm": 82.5,
+    "premier_temps_secondes": 0.0376,
+    "decalage_image_secondes": -0.01
+  }
+}

@@ -1,0 +1,1 @@
+Dépose ici les photos des membres du bureau (portrait, au moins 800 x 1000 pixels), puis écris leur chemin dans contenu.json, par exemple "photos/president.jpg".
