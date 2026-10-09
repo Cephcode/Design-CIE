@@ -9,7 +9,7 @@ Présentation des membres du bureau du CIE, puis appel aux candidatures pour le 
 1. Ouvre `bureau/contenu.json` sur GitHub et clique sur le crayon (ça marche aussi sur téléphone).
 2. Change le texte **entre guillemets**. Garde les guillemets, les deux-points et les virgules.
 3. Clique sur **Commit changes**.
-4. Va dans l'onglet **Actions** : la vidéo se fabrique (environ 10 minutes). Quand c'est vert, ouvre le rendu et télécharge **video-bureau** en bas de la page. Tu y trouveras `bureau-cie.mp4` (HD) et `bureau-cie-whatsapp.mp4` (léger).
+4. Va dans l'onglet **Actions** : la vidéo se fabrique (environ 15 minutes). Quand c'est vert, ouvre le rendu et télécharge **video-bureau** en bas de la page. Tu y trouveras `bureau-cie.mp4` (HD) et `bureau-cie-whatsapp.mp4` (léger).
 
 Si le rendu devient rouge, c'est presque toujours une virgule ou un guillemet oublié dans `contenu.json`. Colle le fichier sur [jsonlint.com](https://jsonlint.com) pour trouver la ligne.
 

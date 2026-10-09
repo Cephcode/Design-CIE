@@ -1,12 +1,17 @@
 name: Vidéo du bureau
 
-# Refait la vidéo à chaque modification de bureau/ (textes, photos, musique),
+# Refait la vidéo à chaque modification des textes, des photos ou de la musique,
 # ou à la demande depuis l'onglet Actions (bouton « Run workflow »).
 on:
   push:
     branches: [main]
     paths:
-      - "bureau/**"
+      - "bureau/contenu.json"
+      - "bureau/photos/**"
+      - "bureau/musique.mp3"
+      - "bureau/index.html"
+      - "bureau/render.py"
+      - "bureau/assets/**"
   workflow_dispatch:
 
 concurrency:
