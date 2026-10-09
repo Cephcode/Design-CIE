@@ -1,0 +1,33 @@
+<!-- @dsCard group="Marque" height=300 subtitle="Pastille sur blanc, sur bleu, en-tête d'affiche" -->
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<meta charset="utf-8">
+<title>Logo</title>
+<style>
+  body { padding: 20px; background: transparent; }
+  .rangee { display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap; }
+  .case { flex: 1 1 180px; min-width: 0; overflow: hidden; min-height: 230px; display: grid; place-items: center; position: relative; }
+  .case small { position: absolute; left: 12px; bottom: 10px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .blanc { background: var(--blanc); border: 1px solid var(--trait); }
+  .blanc small { color: #4a5478; }
+  .bleu { background: var(--bleu-electrique) url(../../assets/Fonds/fond-circuit-bleu.svg) center / cover; }
+  .bleu small, .nuit small { color: var(--blanc); }
+  .nuit { background: var(--encre); }
+  .pastille { width: 112px; height: 112px; border-radius: 50%; }
+  .zone { padding: 18px; outline: 2px dashed #ee7e1e; outline-offset: 0; border-radius: 50%; }
+  .entete-demo { zoom: .62; }
+  .nuit .cie-entete-nom { color: var(--blanc); }
+  .nuit .cie-entete-devise { color: #d3dcff; }
+</style>
+</head>
+<body>
+<div class="rangee">
+  <div class="case blanc"><div class="zone"><img class="pastille" src="../../assets/Logo/logo-cie-pastille.png" alt="Logo du CIE"></div><small>Zone libre : 1/6</small></div>
+  <div class="case bleu"><img class="pastille" src="../../assets/Logo/logo-cie-pastille.png" alt="Logo du CIE sur fond bleu"><small>Sur bleu : la pastille blanche</small></div>
+  <div class="case nuit"><div class="cie-entete entete-demo"><img src="../../assets/Logo/logo-cie-pastille.png" alt=""><div class="cie-entete-nom">Club Informatique<br>de l'EPO<span class="cie-entete-devise">Innovons ensemble !</span></div></div><small>En-tête d'affiche</small></div>
+</div>
+</body>
+</html>

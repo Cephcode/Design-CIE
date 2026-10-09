@@ -1,0 +1,64 @@
+/* CIE : éléments d'affiche. Toutes les mesures sont pour un canevas de 1080 px de large. */
+
+body { margin: 0; font-family: var(--font-texte, "Plus Jakarta Sans", sans-serif); color: var(--texte, #0b1440); background: var(--fond, #ffffff); }
+
+/* Aperçu : une affiche 1080 x 1350 réduite pour tenir dans la carte */
+.cie-apercu { position: relative; overflow: hidden; }
+.cie-apercu > .cie-affiche { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+
+/* L'affiche */
+.cie-affiche { position: relative; width: 1080px; height: 1350px; overflow: hidden; background: var(--fond, #ffffff); color: var(--texte, #0b1440); font-family: var(--font-texte, "Plus Jakarta Sans", sans-serif); }
+.cie-affiche--story { height: 1920px; }
+.cie-affiche--carre { height: 1080px; }
+.cie-fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cie-grain { position: absolute; inset: 0; background-size: 512px 512px; mix-blend-mode: overlay; opacity: .10; pointer-events: none; }
+
+/* En-tête : logo pastille + nom du club */
+.cie-entete { display: flex; align-items: center; gap: var(--space-2, 16px); }
+.cie-entete img { width: 88px; height: 88px; border-radius: 50%; }
+.cie-entete-nom { font-weight: 800; font-size: 22px; line-height: 1.15; letter-spacing: .5px; text-transform: uppercase; color: var(--texte, #0b1440); }
+.cie-entete-devise { display: block; font-weight: 600; font-size: 18px; letter-spacing: 0; text-transform: none; color: var(--texte-doux, #4a5478); margin-top: 4px; }
+
+/* Titres */
+.cie-titre { margin: 0; font-family: var(--font-impact, "Anton", Impact, sans-serif); font-weight: 400; font-size: 220px; line-height: .86; letter-spacing: -1px; text-transform: uppercase; color: var(--titre, #2346e0); }
+.cie-titre--m { font-size: 140px; line-height: .9; letter-spacing: 0; }
+.cie-titre-large { margin: 0; font-weight: 800; font-size: 96px; line-height: .98; letter-spacing: -3px; color: var(--texte, #0b1440); }
+.cie-annotation { display: inline-block; font-family: var(--font-manuscrite, "Caveat Brush", cursive); font-size: 76px; line-height: 1; color: var(--titre, #2346e0); transform: rotate(-6deg); transform-origin: left bottom; }
+.cie-annotation--s { font-size: 44px; }
+.cie-sous-titre { margin: 0; font-weight: 700; font-size: 44px; line-height: 1.1; letter-spacing: -1px; color: var(--texte, #0b1440); }
+.cie-accroche { margin: 0; font-weight: 500; font-size: 32px; line-height: 1.3; color: var(--texte, #0b1440); }
+.cie-pinceau { display: block; height: auto; }
+
+/* Étiquettes */
+.cie-etiquette { display: inline-flex; align-items: center; gap: 10px; padding: 14px 20px; border-radius: var(--rayon-0, 0); background: var(--bleu-nuit, #122376); color: var(--blanc, #ffffff); font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: 2px; text-transform: uppercase; }
+.cie-etiquette--accent { background: var(--accent, #ee7e1e); color: var(--sur-accent, #0b1440); box-shadow: var(--ombre-dure, 8px 8px 0 #0b1440); }
+.cie-etiquette--blanche { background: var(--blanc, #ffffff); color: var(--bleu-nuit, #122376); }
+.cie-pilule { display: inline-flex; align-items: center; padding: 12px 26px; border-radius: var(--rayon-pilule, 999px); border: 3px solid currentColor; color: var(--texte, #0b1440); font-weight: 700; font-size: 22px; line-height: 1; letter-spacing: .5px; }
+.cie-pilule--pleine { border-color: transparent; background: var(--fond-alt, #dfe6ff); }
+
+/* Sticker rond à texte tournant */
+.cie-sticker { position: relative; width: 200px; height: 200px; border-radius: 50%; background: var(--accent, #ee7e1e); color: var(--sur-accent, #0b1440); box-shadow: var(--ombre-dure, 8px 8px 0 #0b1440); transform: rotate(-10deg); }
+.cie-sticker svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cie-sticker-ronde { font-family: var(--font-texte, "Plus Jakarta Sans", sans-serif); font-weight: 800; font-size: 22px; letter-spacing: 0; fill: currentColor; text-transform: uppercase; }
+.cie-sticker-coeur { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font-family: var(--font-impact, "Anton", Impact, sans-serif); font-size: 46px; line-height: .92; text-transform: uppercase; }
+.cie-sticker--bleu { background: var(--bleu-nuit, #122376); color: var(--blanc, #ffffff); box-shadow: var(--ombre-dure, 8px 8px 0 #0b1440); }
+
+/* Bloc d'informations : date, lieu, heure */
+.cie-infos { display: grid; gap: 14px; }
+.cie-info { display: flex; align-items: stretch; }
+.cie-info-icone { flex: none; width: 72px; display: grid; place-items: center; background: var(--accent, #ee7e1e); color: var(--sur-accent, #0b1440); }
+.cie-info-icone svg { width: 36px; height: 36px; }
+.cie-info-texte { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 12px 22px; min-height: 48px; background: var(--fond-alt, #dfe6ff); color: var(--texte, #0b1440); font-weight: 600; font-size: 26px; line-height: 1.2; }
+.cie-info-texte b { font-weight: 800; text-transform: uppercase; }
+.cie-info-texte small { font-size: 20px; font-weight: 600; color: var(--texte-doux, #4a5478); }
+
+/* Bandeau contact en pied d'affiche */
+.cie-bandeau { position: absolute; left: 0; right: 0; bottom: 0; height: var(--bandeau-hauteur, 120px); display: flex; align-items: center; gap: var(--space-4, 32px); padding: 0 var(--marge-affiche, 64px); box-sizing: border-box; background: var(--encre, #0b1440); color: var(--blanc, #ffffff); font-weight: 600; font-size: 20px; line-height: 1.3; }
+.cie-bandeau img { width: 64px; height: 64px; border-radius: 50%; }
+.cie-bandeau-sep { width: 2px; align-self: stretch; margin: 30px 0; background: #ffffff40; }
+.cie-bandeau-devise { margin-left: auto; white-space: nowrap; font-family: var(--font-manuscrite, "Caveat Brush", cursive); font-size: 40px; color: var(--accent, #ee7e1e); transform: rotate(-4deg); }
+.cie-bandeau b { display: block; font-weight: 800; font-size: 22px; }
+.cie-bandeau > div { white-space: nowrap; }
+
+/* Zone du sujet (personnage ou photo) : contour blanc et ombre de détourage */
+.cie-sujet { position: absolute; filter: drop-shadow(0 28px 44px #0b144059); }

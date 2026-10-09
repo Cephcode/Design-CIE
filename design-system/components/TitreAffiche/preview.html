@@ -1,0 +1,32 @@
+<!-- @dsCard group="Typographie d'affiche" height=300 subtitle="Annotation + titre Anton + trait de pinceau ; variante titre-large" -->
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<meta charset="utf-8">
+<title>Titre d'affiche</title>
+<style>
+  .scene { padding: 24px 32px; display: flex; gap: 40px; align-items: flex-start; background: var(--fond); }
+  .bloc { zoom: .45; flex: none; }
+  .bloc .cie-pinceau { width: 520px; margin: 0 0 0 -4px; }
+  .bloc .cie-annotation { margin-left: 8px; }
+  .bloc .cie-titre-large { width: 620px; }
+  [data-theme="bleu"] .pinceau-clair, :root:not([data-theme="bleu"]) .pinceau-bleu { display: none; }
+</style>
+</head>
+<body style="margin:0">
+<div class="scene">
+  <div class="bloc">
+    <span class="cie-annotation">La grande</span>
+    <h1 class="cie-titre">Nuit<br>du code</h1>
+    <img class="cie-pinceau pinceau-clair" src="../../assets/Textures/trait-pinceau-bleu.svg" alt="">
+    <img class="cie-pinceau pinceau-bleu" src="../../assets/Textures/trait-pinceau-orange.svg" alt="">
+  </div>
+  <div class="bloc">
+    <h1 class="cie-titre-large">Python pour débutants</h1>
+    <span class="cie-annotation cie-annotation--s" style="margin-top:18px">c'est gratuit !</span>
+  </div>
+</div>
+</body>
+</html>

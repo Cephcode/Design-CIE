@@ -1,0 +1,88 @@
+<!-- @dsCard group="Gabarits" height=690 width=560 subtitle="Post 4:5, fond papier quadrillé, photo détourée" -->
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<meta charset="utf-8">
+<title>Affiche photo</title>
+<style>
+  body { background: transparent; padding: 12px; }
+  .cie-apercu { width: 540px; height: 675px; box-shadow: 0 10px 30px #0b144033; }
+  .cie-apercu > .cie-affiche { transform: scale(.5); }
+  .haut { position: absolute; left: 64px; right: 64px; top: 64px; display: flex; justify-content: space-between; align-items: center; }
+  .zone-titre { position: absolute; left: 64px; top: 200px; z-index: 2; }
+  .zone-titre .cie-annotation { margin: 0 0 0 8px; }
+  .zone-titre .cie-titre { font-size: 250px; }
+  .zone-titre .cie-pinceau { width: 520px; margin: 0 0 0 -4px; }
+  .zone-titre .cie-sous-titre { margin-top: 18px; }
+  .programme { position: absolute; left: 64px; top: 760px; width: 470px; padding: 32px; box-sizing: border-box; border-radius: var(--rayon-l); background: var(--fond-alt); box-shadow: var(--ombre-carte); z-index: 2; }
+  .programme h2 { margin: 0 0 18px; font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--bleu-electrique); }
+  .programme ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .programme li { display: flex; gap: 16px; align-items: baseline; font-size: 26px; font-weight: 600; line-height: 1.3; color: var(--texte); }
+  .programme li::before { content: ""; flex: none; width: 14px; height: 14px; background: var(--accent); transform: translateY(-3px); }
+  .photo { left: 520px; top: 330px; width: 600px; height: 900px; }
+  .photo svg { width: 100%; height: 100%; display: block; }
+  .urgence { position: absolute; left: 620px; top: 1030px; z-index: 3; transform: rotate(-3deg); }
+  .date { position: absolute; left: 64px; top: 1110px; z-index: 2; }
+  .repere { position: absolute; left: 700px; top: 880px; }
+</style>
+</head>
+<body>
+<div class="cie-apercu">
+  <div class="cie-affiche" data-theme="clair">
+    <img class="cie-fond" src="../../assets/Fonds/fond-grille-papier.svg" alt="">
+    <div class="cie-grain" style="background-image:url(../../assets/Textures/grain-photoshop.png)"></div>
+
+    <div class="haut">
+      <div class="cie-entete">
+        <img src="../../assets/Logo/logo-cie-pastille.png" alt="Logo du CIE">
+        <div class="cie-entete-nom">Club Informatique<br>de l'EPO</div>
+      </div>
+      <span class="cie-pilule">Formation, 4 séances</span>
+    </div>
+
+    <div class="zone-titre">
+      <span class="cie-annotation">Formation</span>
+      <h1 class="cie-titre">Python</h1>
+      <img class="cie-pinceau" src="../../assets/Textures/trait-pinceau-bleu.svg" alt="">
+      <p class="cie-sous-titre">De zéro à ton premier programme</p>
+    </div>
+
+    <div class="cie-sujet photo">
+      <!-- Emplacement de la photo détourée : silhouette de calage. Pas de contour blanc pour une photo, seulement l'ombre de détourage. -->
+      <svg viewBox="0 0 600 900" aria-label="Emplacement de la photo">
+        <path d="M300 40c-92 0-150 62-150 146 0 50 20 88 54 114 0 0 10 38 62 52v44h70v-44c52-14 62-52 62-52 34-26 54-64 54-114 0-84-58-146-152-146z" fill="#9aa6cc"/>
+        <path d="M40 900V560c0-112 84-154 180-164h160c96 10 180 52 180 164v340z" fill="#7d8bb8"/>
+      </svg>
+    </div>
+    <span class="cie-etiquette cie-etiquette--blanche repere">Ici : la photo détourée</span>
+
+    <div class="programme">
+      <h2>Au programme</h2>
+      <ul>
+        <li>Variables et types</li>
+        <li>Conditions et boucles</li>
+        <li>Fonctions</li>
+        <li>Mini projet : un quiz en console</li>
+      </ul>
+    </div>
+
+    <span class="cie-etiquette cie-etiquette--accent urgence">Places limitées</span>
+
+    <div class="date cie-infos">
+      <div class="cie-info">
+        <span class="cie-info-icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+        <span class="cie-info-texte"><b>Les samedis, dès le 25 oct.</b><small>15h00, salle info, EPO</small></span>
+      </div>
+    </div>
+
+    <div class="cie-bandeau">
+      <img src="../../assets/Logo/logo-cie-pastille.png" alt="">
+      <div><b>Inscription : lien en bio</b>Facebook et WhatsApp : CIE EPO</div>
+      <span class="cie-bandeau-devise">Innovons ensemble !</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

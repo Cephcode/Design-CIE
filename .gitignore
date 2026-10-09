@@ -1,0 +1,8 @@
+# rendu
+motion/frames/
+*.mp4
+*.wav
+*.mp3
+# photos des membres et musique : gardées hors du dépôt public
+motion/assets/p_*.jpg
+motion/assets/f_*.jpg

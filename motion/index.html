@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CIE motion</title>
+<style>
+@font-face { font-family: "Anton"; src: url(assets/Anton-Regular.woff2) format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url(assets/PlusJakartaSans-Variable.woff2) format("woff2"); font-weight: 200 800; font-display: block; }
+@font-face { font-family: "Caveat Brush"; src: url(assets/CaveatBrush-Regular.woff2) format("woff2"); font-weight: 400; font-display: block; }
+:root { --nuit:#122376; --elec:#2346e0; --ciel:#dfe6ff; --orange:#ee7e1e; --blanc:#ffffff; --papier:#f4f6fb; --encre:#0b1440; --doux:#4a5478; }
+html, body { margin: 0; background: #000; }
+#stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--encre); font-family: "Plus Jakarta Sans", sans-serif; color: var(--blanc); }
+#cam { position: absolute; inset: 0; }
+.scene { position: absolute; inset: 0; overflow: hidden; display: none; }
+.abs { position: absolute; left: 0; top: 0; transform-origin: 50% 50%; white-space: nowrap; }
+.full { position: absolute; inset: 0; }
+.bgimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.anton { font-family: "Anton", Impact, sans-serif; font-weight: 400; line-height: .92; text-transform: uppercase; }
+.jak { font-family: "Plus Jakarta Sans", sans-serif; font-weight: 800; line-height: 1.05; letter-spacing: -2px; }
+.hand { font-family: "Caveat Brush", cursive; line-height: 1; }
+.mask { position: absolute; overflow: hidden; padding: 0 12px 6px 0; }
+.mask > .in { display: block; transform-origin: 0 100%; }
+.cur { display: inline-block; width: .48em; height: .86em; background: var(--orange); vertical-align: -0.1em; margin-left: .06em; }
+.cur.blanc { background: var(--blanc); }
+.cur.encre { background: var(--encre); }
+.etq { background: var(--orange); color: var(--encre); font-weight: 800; letter-spacing: 4px; text-transform: uppercase; padding: 20px 30px 18px; box-shadow: 12px 12px 0 var(--encre); line-height: 1; }
+.card { position: absolute; width: 640px; height: 800px; background: var(--blanc); padding: 20px; box-sizing: content-box; box-shadow: 16px 16px 0 var(--encre); transform-origin: 50% 50%; }
+.card img { width: 640px; height: 800px; display: block; object-fit: cover; }
+#grain { position: absolute; inset: -60px; background: url(assets/grain-photoshop.png); background-size: 512px; mix-blend-mode: overlay; opacity: .13; pointer-events: none; }
+#flash { position: absolute; inset: 0; background: var(--blanc); opacity: 0; }
+.tok-k { color: var(--orange); } .tok-v { color: var(--ciel); } .tok-w { color: var(--blanc); }
+</style>
+</head>
+<body>
+<div id="stage">
+<div id="cam">
+
+  <!-- S1-2 : bonjour le monde, ici on code -->
+  <section class="scene" id="s1" style="background:var(--encre)">
+    <svg class="full" viewBox="0 0 1080 1920" id="traces"></svg>
+    <div class="abs jak" id="hello" style="transform-origin:0 50%;left:90px;top:860px;font-size:92px;letter-spacing:-1px"><span style="color:var(--orange)">&gt;&nbsp;</span><span id="helloTxt"></span><span class="cur" id="helloCur"></span></div>
+    <div class="abs hand" id="comment" style="left:96px;top:990px;font-size:66px;color:var(--ciel)"><span id="commentTxt"></span></div>
+    <div class="mask" style="left:84px;top:700px"><div class="in anton" id="w1" style="font-size:176px">Ici,</div></div>
+    <div class="mask" style="left:84px;top:870px"><div class="in anton" id="w2" style="font-size:176px">On <span style="color:var(--orange)">code,</span></div></div>
+    <div class="mask" style="left:84px;top:1040px"><div class="in anton" id="w3" style="font-size:176px">On <span style="color:var(--orange)">partage,</span></div></div>
+    <div class="mask" style="left:84px;top:1210px"><div class="in anton" id="w4" style="font-size:176px">On <span style="color:var(--orange)">apprend.</span><span class="cur" id="w4Cur" style="height:.7em;vertical-align:0"></span></div></div>
+    <div class="abs" id="wipe1" style="left:-200px;top:0;width:1480px;height:2400px;background:var(--nuit)"></div>
+  </section>
+
+  <!-- S3 : chargement -->
+  <section class="scene" id="s3" style="background:var(--nuit)">
+    <div class="abs jak" id="loadLbl" style="left:90px;top:600px;font-size:46px;font-weight:700;letter-spacing:0">chargement de l'esprit CIE<span id="dots"></span></div>
+    <div class="abs anton" id="pct" style="left:84px;top:690px;font-size:330px;transform-origin:0 50%">0%</div>
+    <div class="abs" id="bar" style="left:90px;top:1100px;width:888px;height:96px;border:6px solid var(--blanc)">
+      <div id="fill" style="position:absolute;left:0;top:0;bottom:0;width:0;background:var(--orange)"></div>
+      <div id="pusher" style="position:absolute;top:-22px;width:40px;height:140px;background:var(--blanc);transform-origin:50% 100%"></div>
+    </div>
+    <div class="abs hand" id="ann1" style="left:120px;top:1290px;font-size:84px;color:var(--ciel);transform-origin:0 50%">patience...</div>
+    <div class="abs hand" id="ann2" style="left:560px;top:1370px;font-size:96px;color:var(--orange);transform-origin:0 50%">ça arrive !</div>
+  </section>
+
+  <!-- S4 : drop CIE -->
+  <section class="scene" id="s4" style="background:var(--elec)">
+    <img class="bgimg" id="circ4" src="assets/fond-circuit-bleu.svg" alt="">
+    <div class="abs" id="disc4" style="left:130px;top:240px;width:820px;height:820px;border-radius:50%;background:var(--nuit)"></div>
+    <img class="abs" id="logo4" src="assets/logo-cie-pastille.png" style="left:270px;top:380px;width:540px;height:540px;border-radius:50%;box-shadow:14px 14px 0 var(--encre)" alt="">
+    <div class="abs" id="ring4" style="left:700px;top:300px;width:230px;height:230px"></div>
+    <div class="abs anton" id="cieC" style="left:250px;top:1080px;font-size:430px">C</div>
+    <div class="abs anton" id="cieI" style="left:470px;top:1080px;font-size:430px">I</div>
+    <div class="abs anton" id="cieE" style="left:585px;top:1080px;font-size:430px">E</div>
+    <div class="abs jak" id="sub4" style="left:0;width:1080px;text-align:center;top:1520px;font-size:44px;font-weight:700;letter-spacing:0;line-height:1.3;white-space:normal"><span id="sub4Txt"></span></div>
+  </section>
+
+  <!-- S5 : passionnés, partage -->
+  <section class="scene" id="s5" style="background:var(--nuit)">
+    <div class="mask" style="left:84px;top:600px"><div class="in jak" id="d1" style="font-size:96px">Des jeunes</div></div>
+    <div class="abs anton" id="d2" style="left:84px;top:710px;font-size:206px;transform-origin:0 70%">Passionnés</div>
+    <img class="abs" id="brush5" src="assets/trait-pinceau-orange.svg" style="left:70px;top:905px;width:860px" alt="">
+    <div class="abs hand" id="d3" style="left:100px;top:1010px;font-size:118px;color:var(--ciel);transform-origin:0 50%">d'informatique</div>
+    <div class="mask" style="left:84px;top:1230px"><div class="in jak" id="d4" style="font-size:96px">et de</div></div>
+    <div class="abs anton" id="brL" style="left:0;top:1335px;font-size:300px;width:150px;text-align:center">{</div>
+    <div class="abs anton" id="brR" style="left:0;top:1335px;font-size:300px;width:150px;text-align:center">}</div>
+    <div class="abs anton" id="d5" style="left:0;width:1080px;text-align:center;top:1370px;font-size:250px;color:var(--orange)">Partage</div>
+    <div class="abs" id="paper6" style="left:-120px;top:-120px;width:1320px;height:2160px;background:var(--papier) url(assets/fond-grille-papier.svg) center/1080px 1920px"></div>
+  </section>
+
+  <!-- S6 : activités -->
+  <section class="scene" id="s6" style="background:var(--papier)">
+    <img class="bgimg" src="assets/fond-grille-papier.svg" alt="">
+    <div class="mask" style="left:84px;top:150px"><div class="in anton" id="t6" style="font-size:168px;color:var(--elec)">On organise</div></div>
+    <div class="abs hand" id="a6" style="left:640px;top:330px;font-size:76px;color:var(--elec);transform-origin:0 50%">toute l'année !</div>
+    <div class="card" id="c1" style="left:200px;top:590px"><img src="assets/p_formation.jpg" alt=""></div>
+    <div class="card" id="c2" style="left:200px;top:590px"><img src="assets/p_atelier.jpg" alt=""></div>
+    <div class="card" id="c3" style="left:200px;top:590px"><img src="assets/p_codebattle.jpg" alt=""></div>
+    <div class="card" id="c4" style="left:200px;top:590px"><img src="assets/p_prix.jpg" alt=""></div>
+    <div class="abs etq jak" id="l1" style="left:110px;top:1380px;font-size:58px;letter-spacing:4px"><span></span><span class="cur encre"></span></div>
+    <div class="abs etq jak" id="l2" style="left:110px;top:1380px;font-size:58px;letter-spacing:4px"><span></span><span class="cur encre"></span></div>
+    <div class="abs etq jak" id="l3" style="left:110px;top:1380px;font-size:58px;letter-spacing:4px"><span></span><span class="cur encre"></span></div>
+    <div class="abs etq jak" id="l4" style="left:110px;top:1380px;font-size:58px;letter-spacing:4px"><span></span><span class="cur encre"></span></div>
+    <div class="abs jak" id="n6" style="left:84px;top:1700px;font-size:40px;font-weight:700;letter-spacing:2px;color:var(--elec)"></div>
+  </section>
+
+  <!-- S7 : code bienvenue -->
+  <section class="scene" id="s7" style="background:var(--encre)">
+    <div class="abs" id="win" style="left:60px;top:430px;width:960px;height:640px;background:var(--nuit);transform-origin:50% 0">
+      <div style="height:84px;background:#0e1b5e;display:flex;align-items:center;gap:18px;padding:0 34px">
+        <i style="width:24px;height:24px;border-radius:50%;background:var(--orange)"></i><i style="width:24px;height:24px;border-radius:50%;background:var(--ciel)"></i><i style="width:24px;height:24px;border-radius:50%;background:var(--blanc)"></i>
+        <span style="margin-left:22px;font-weight:600;font-size:32px;color:var(--ciel)">bienvenue.cie</span>
+      </div>
+      <div style="position:absolute;left:34px;top:140px;font-weight:600;font-size:54px;line-height:118px;color:#6f80d6;text-align:right;width:40px;top:136px">1<br>2<br>3</div>
+      <div id="code" class="jak" style="position:absolute;left:112px;top:132px;font-size:64px;font-weight:700;letter-spacing:0;line-height:118px;white-space:pre"></div>
+      <div id="run" style="position:absolute;right:40px;bottom:40px;width:120px;height:120px;border-radius:50%;background:var(--orange);display:grid;place-items:center">
+        <svg width="50" height="56" viewBox="0 0 50 56"><path d="M6 4 L46 28 L6 52 Z" fill="#0b1440"/></svg>
+      </div>
+    </div>
+    <div class="mask" style="left:0;width:1080px;top:960px"><div class="in anton" id="o1" style="font-size:176px;text-align:center;transform-origin:50% 100%">Tout le monde</div></div>
+    <div class="mask" style="left:0;width:1080px;top:1135px"><div class="in anton" id="o2" style="font-size:176px;text-align:center;transform-origin:50% 100%">est</div></div>
+    <div class="abs anton" id="o3" style="left:0;width:1080px;text-align:center;top:1300px;font-size:250px;color:var(--orange)">bienvenu</div>
+    <div class="abs" id="tog" style="left:240px;top:1610px;width:600px;height:124px;border-radius:999px;border:6px solid var(--blanc)">
+      <div id="knob" style="position:absolute;top:10px;left:10px;width:290px;height:104px;border-radius:999px;background:var(--orange)"></div>
+      <div class="jak" style="position:absolute;inset:0;display:flex;align-items:center;font-size:36px;font-weight:800;letter-spacing:3px">
+        <span id="tg1" style="flex:1;text-align:center;position:relative">DÉBUTANT</span><span id="tg2" style="flex:1;text-align:center;position:relative">EXPERT</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- S8 : experts, montage, ensemble -->
+  <section class="scene" id="s8" style="background:var(--elec)">
+    <img class="bgimg" src="assets/fond-circuit-bleu.svg" alt="">
+    <div id="g8a" class="full">
+      <div class="mask" style="left:84px;top:650px"><div class="in jak" id="e1" style="font-size:92px">On invite</div></div>
+      <div class="abs anton" id="e2" style="left:84px;top:760px;font-size:200px;transform-origin:0 70%">des experts</div>
+      <div class="mask" style="left:84px;top:1080px"><div class="in jak" id="e3" style="font-size:92px">et nos membres</div></div>
+      <div class="abs etq anton" id="e4" style="left:84px;top:1210px;font-size:190px;letter-spacing:2px;padding:20px 34px 6px;transform-origin:20% 50%">partagent</div>
+    </div>
+    <div id="mont" class="full">
+      <img class="bgimg" id="m0" src="assets/f_prix.jpg" alt=""><img class="bgimg" id="m1" src="assets/f_cadeaux.jpg" alt="">
+      <img class="bgimg" id="m2" src="assets/f_attestation.jpg" alt=""><img class="bgimg" id="m3" src="assets/f_atelier.jpg" alt="">
+      <img class="bgimg" id="m4" src="assets/f_formation.jpg" alt=""><img class="bgimg" id="m5" src="assets/f_codebattle.jpg" alt="">
+      <div class="abs anton" id="mt" style="left:84px;top:150px;font-size:170px;background:var(--nuit);padding:24px 36px 8px;box-shadow:14px 14px 0 var(--orange)">On apprend</div>
+    </div>
+    <div id="g8c" class="full">
+      <div class="abs anton" id="ens" style="left:0;width:1080px;text-align:center;top:730px;font-size:228px">Ensemble</div>
+      <img class="abs" id="brush8" src="assets/trait-pinceau-orange.svg" style="left:110px;top:950px;width:860px" alt="">
+      <div class="abs hand" id="ens2" style="left:250px;top:1110px;font-size:104px;transform-origin:0 50%">c'est ça, le CIE.</div>
+    </div>
+    <div class="abs" id="wipe9" style="left:-200px;top:0;width:1480px;height:2400px;background:var(--papier) url(assets/fond-grille-papier.svg) 200px 0/1080px 1920px"></div>
+  </section>
+
+  <!-- S9 : fin -->
+  <section class="scene" id="s9" style="background:var(--papier)">
+    <img class="bgimg" src="assets/fond-grille-papier.svg" alt="">
+    <img class="abs" id="logo9" src="assets/logo-cie-pastille.png" style="left:330px;top:300px;width:420px;height:420px;border-radius:50%;box-shadow:14px 14px 0 var(--encre)" alt="">
+    <div class="abs anton" id="cie9" style="left:0;width:1080px;text-align:center;top:780px;font-size:220px;color:var(--elec)">CIE</div>
+    <div class="abs jak" id="sub9" style="left:0;width:1080px;text-align:center;top:1010px;font-size:44px;font-weight:700;letter-spacing:0;color:var(--encre)">Club Informatique de l'EPO</div>
+    <div class="abs hand" id="dev9" style="left:0;top:1140px;font-size:122px;color:var(--elec);transform-origin:0 50%"><span id="dev9Txt">Innovons ensemble !</span><span class="cur" id="dev9Cur" style="height:.62em;vertical-align:.02em"></span></div>
+    <img class="abs" id="brush9" src="assets/trait-pinceau-bleu.svg" style="left:160px;top:1290px;width:760px" alt="">
+    <div class="abs etq jak" id="join9" style="left:0;top:1450px;font-size:62px">Rejoins le club</div>
+    <div class="abs jak" id="tag9" style="left:0;width:1080px;text-align:center;top:1660px;font-size:38px;font-weight:600;letter-spacing:0;color:var(--doux)">Débutant ou expert, tu as ta place.</div>
+  </section>
+
+  <div id="flash"></div>
+</div>
+<div id="grain"></div>
+</div>
+
+<script>
+// ---------- temps ----------
+const P = 0.4686144;               // durée d'un temps (128 BPM)
+const SYNC = -0.01;                // l image arrive un poil avant le son
+const B = i => i * P + SYNC;       // temps n°i de l'extrait (0 = début du pont)
+const DUR = 49.2;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const pr = (t, s, d) => clamp((t - s) / d);
+const lerp = (a, b, x) => a + (b - a) * x;
+const E = {
+  lin: x => x,
+  outCubic: x => 1 - Math.pow(1 - x, 3),
+  inCubic: x => x * x * x,
+  inOutCubic: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  outExpo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x),
+  inExpo: x => x <= 0 ? 0 : Math.pow(2, 10 * x - 10),
+  outBack: x => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+  outBackSoft: x => { const c1 = 1.2, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const $ = id => document.getElementById(id);
+function tf(el, o) {
+  const x = o.x || 0, y = o.y || 0, r = o.r || 0, s = o.s == null ? 1 : o.s;
+  const sx = o.sx == null ? s : o.sx, sy = o.sy == null ? s : o.sy;
+  el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) rotate(${r.toFixed(3)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
+  const op = o.o == null ? 1 : o.o;
+  el.style.opacity = op;
+  el.style.visibility = op <= 0.001 ? 'hidden' : 'visible';
+}
+const show = (el, on) => { el.style.display = on ? 'block' : 'none'; };
+const blink = t => (((t - SYNC) % P) + P) % P < P * 0.55;
+// impulsion qui retombe après chaque temps compris dans [i0, i1)
+function pulse(t, i0, i1, k = 9) {
+  const i = Math.floor((t - SYNC) / P + 1e-6);
+  if (i < i0 || i >= i1) return 0;
+  return Math.exp(-(t - B(i)) * k);
+}
+// révélation par masque : 0 → caché sous la ligne, 1 → en place
+function rise(el, t, s, d = 0.32, dist = 110) {
+  const p = E.outExpo(pr(t, s, d));
+  tf(el, { y: (1 - p) * dist * 1.6, o: t < s ? 0 : 1 });
+}
+// tampon : arrive grand puis se pose
+function slam(el, t, s, from = 1.6, d = 0.3, extra = {}) {
+  const p = pr(t, s, d);
+  const sc = lerp(from, 1, E.outBack(p));
+  tf(el, Object.assign({ s: sc, o: t < s ? 0 : clamp(p * 6) }, extra));
+}
+function typeText(el, full, t, s, perChar) {
+  const n = t < s ? 0 : Math.min(full.length, Math.floor((t - s) / perChar) + 1);
+  el.textContent = full.slice(0, n);
+  return n;
+}
+function brush(el, t, s, d = 0.35) {
+  const p = E.outCubic(pr(t, s, d));
+  el.style.clipPath = `inset(0 ${(100 - p * 100).toFixed(2)}% 0 0)`;
+  el.style.visibility = t < s ? 'hidden' : 'visible';
+}
+// secousse caméra déterministe
+function shake(t, hits, amp) {
+  let x = 0, y = 0;
+  for (const h of hits) {
+    if (t < h) continue;
+    const k = Math.exp(-(t - h) * 12) * amp;
+    x += Math.sin((t - h) * 95) * k; y += Math.cos((t - h) * 71) * k;
+  }
+  return { x, y };
+}
+
+// ---------- pistes de circuit (scène 1) ----------
+const TR = [
+  [[0,180],[300,180],[380,260],[380,330]],
+  [[1080,120],[820,120],[740,200],[740,330]],
+  [[540,0],[540,70],[600,130],[960,130]],
+  [[0,1560],[260,1560],[340,1480]],
+  [[1080,1640],[760,1640],[680,1560],[680,1490]],
+  [[300,1920],[300,1760],[380,1680],[560,1680]],
+  [[1080,1860],[960,1860],[880,1780]],
+  [[900,1920],[900,1790],[980,1710],[1080,1710]],
+];
+const svgNS = 'http://www.w3.org/2000/svg';
+const traceEls = TR.map(pts => {
+  const pl = document.createElementNS(svgNS, 'polyline');
+  pl.setAttribute('points', pts.map(p => p.join(',')).join(' '));
+  pl.setAttribute('fill', 'none'); pl.setAttribute('stroke', '#2346e0'); pl.setAttribute('stroke-width', '7');
+  pl.setAttribute('stroke-linecap', 'round'); pl.setAttribute('stroke-linejoin', 'round');
+  let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+  pl.setAttribute('stroke-dasharray', L); pl.dataset.len = L;
+  const end = pts[pts.length - 1];
+  const c = document.createElementNS(svgNS, 'circle');
+  c.setAttribute('cx', end[0]); c.setAttribute('cy', end[1]); c.setAttribute('r', 13);
+  c.setAttribute('fill', '#0b1440'); c.setAttribute('stroke', '#ee7e1e'); c.setAttribute('stroke-width', '6');
+  c.style.transformBox = 'fill-box'; c.style.transformOrigin = 'center';
+  $('traces').appendChild(pl); $('traces').appendChild(c);
+  return { pl, c, L };
+});
+
+// ---------- anneau du sticker (scène 4) ----------
+$('ring4').innerHTML = `<div style="position:absolute;inset:0;border-radius:50%;background:#ee7e1e;box-shadow:10px 10px 0 #0b1440"></div>
+<svg viewBox="0 0 230 230" style="position:absolute;inset:0" id="ring4svg"><defs><path id="rp" d="M115 115 m-84 0 a84 84 0 1 1 168 0 a84 84 0 1 1 -168 0"/></defs>
+<text style="font-family:'Plus Jakarta Sans';font-weight:800;font-size:25px;fill:#0b1440"><textPath href="#rp" textLength="524" lengthAdjust="spacing">INNOVONS ENSEMBLE • CIE • </textPath></text></svg>
+<div style="position:absolute;inset:0;display:grid;place-items:center;font-family:Anton;font-size:64px;color:#0b1440;line-height:.9;text-align:center">{ }</div>`;
+
+// ---------- code (scène 7) ----------
+const CODE = [
+  [['k','si'],['w',' ('],['v','débutant'],['k',' || '],['v','expert'],['w',') {']],
+  [['w','  '],['w','bienvenue'],['w','();']],
+  [['w','}']],
+];
+const codeLen = CODE.map(l => l.reduce((a, s) => a + s[1].length, 0));
+function renderCode(chars, cursorOn) {
+  let left = chars, html = '';
+  CODE.forEach((line, li) => {
+    let lineHtml = '';
+    for (const [k, s] of line) {
+      if (left <= 0) break;
+      const part = s.slice(0, left); left -= part.length;
+      lineHtml += `<span class="tok-${k}"${s === 'bienvenue' ? ' style="font-weight:800"' : ''}>${part.replace(/</g,'&lt;')}</span>`;
+    }
+    const lineDone = chars >= codeLen.slice(0, li + 1).reduce((a, b) => a + b, 0);
+    const isCurLine = (li === CODE.length - 1) || !lineDone || chars < codeLen.slice(0, li + 1).reduce((a, b) => a + b, 0) + 1;
+    html += lineHtml;
+    if (li < CODE.length - 1) html += '\n';
+  });
+  $('code').innerHTML = html + (cursorOn ? '<span class="cur" style="height:.9em"></span>' : '');
+}
+// caractères tapés en fonction du temps (ligne 1 : temps 56-60, ligne 2 : 60-62, ligne 3 : 62)
+function codeChars(t) {
+  const l1 = codeLen[0], l2 = codeLen[1], l3 = codeLen[2];
+  if (t < B(56)) return 0;
+  if (t < B(60)) return Math.min(l1, Math.floor((t - B(56)) / (4 * P / l1)) + 1);
+  if (t < B(62)) return l1 + Math.min(l2, Math.floor((t - B(60)) / (2 * P / l2)) + 1);
+  return l1 + l2 + Math.min(l3, t >= B(62) ? 1 : 0);
+}
+
+// ---------- rendu d'une image ----------
+const scenes = ['s1','s3','s4','s5','s6','s7','s8','s9'].map($);
+function only(...ids) { scenes.forEach(s => show(s, ids.includes(s.id))); }
+
+function render(t) {
+  // grain qui bouge à chaque image
+  const f = Math.floor(Math.round(t * 30) / 3);
+  $('grain').style.backgroundPosition = `${(f * 137) % 512}px ${(f * 263) % 512}px`;
+  $('flash').style.opacity = 0;
+  $('cam').style.transform = 'none';
+
+  // ===== S1 + S2 : 0 → temps 16 =====
+  if (t < B(16) + 0.4) {
+    only('s1');
+    // bonjour le monde
+    const hello = 'bonjour le monde';
+    const n = typeText($('helloTxt'), hello, t, B(1), P / 4);
+    $('helloCur').style.visibility = (n > 0 && n < hello.length) || blink(t) ? 'visible' : 'hidden';
+    if (t >= B(8)) $('helloCur').style.visibility = 'hidden';
+    typeText($('commentTxt'), "// le club informatique de l'EPO", t, B(5.5), P / 12);
+    // le bloc remonte un peu au temps 7,5
+    const up = E.inOutCubic(pr(t, B(7.5), 0.35));
+    tf($('hello'), { y: -up * 470, s: lerp(1, 0.86, up) }); tf($('comment'), { y: -up * 490, o: 1 - up * 0.35 });
+    rise($('w1'), t, B(8)); rise($('w2'), t, B(10)); rise($('w3'), t, B(12)); rise($('w4'), t, B(14));
+    $('w4Cur').style.visibility = t >= B(14.6) && blink(t) ? 'visible' : 'hidden';
+    // pulsation des mots sur les temps
+    const pz = pulse(t, 8, 16, 10) * 0.03;
+    ['w1','w2','w3','w4'].forEach(id => { if (t >= B({w1:8,w2:10,w3:12,w4:14}[id]) + 0.32) tf($(id), { s: 1 + pz }); });
+    // pistes : une par temps, de 8 à 15
+    traceEls.forEach((tr, i) => {
+      const s = B(8 + i), p = E.outCubic(pr(t, s, 0.42));
+      tr.pl.setAttribute('stroke-dashoffset', (tr.L * (1 - p)).toFixed(1));
+      tr.pl.style.visibility = t >= s ? 'visible' : 'hidden';
+      const pp = pr(t, s + 0.36, 0.22);
+      tr.c.style.transform = `scale(${t >= s + 0.36 ? E.outBack(pp) : 0})`;
+    });
+    // volet bleu nuit qui monte en biais
+    const w = E.inOutCubic(pr(t, B(16) - 0.28, 0.36));
+    tf($('wipe1'), { y: lerp(2100, -240, w), r: -8 });
+    if (t >= B(16) + 0.08) only('s3');
+    else return;
+  }
+
+  // ===== S3 : chargement, temps 16 → 24 =====
+  if (t < B(24)) {
+    only('s3');
+    const vals = [0, 15, 31, 47, 63, 79, 79, 99];
+    const k = clamp(Math.floor((t - SYNC) / P) - 16, 0, 7);
+    const v = lerp(k === 0 ? 0 : vals[k - 1] , vals[k], E.outCubic(pr(t, B(16 + k), 0.2)));
+    const vv = t < B(16) ? 0 : v;
+    $('pct').textContent = Math.round(vv) + '%';
+    $('dots').textContent = '.'.repeat(1 + (Math.floor((t - SYNC) / P) % 3));
+    const w = vv / 100 * 888;
+    $('fill').style.width = w + 'px';
+    const sq = pulse(t, 16, 22, 12) + pulse(t, 23, 24, 12);
+    tf($('pusher'), { x: Math.max(0, w - 20), sx: 1 + sq * 0.5, sy: 1 - sq * 0.25 });
+    tf($('pct'), { s: 1 + (pulse(t, 16, 22, 10) + pulse(t, 23, 24, 8)) * 0.06 + E.outBack(pr(t, B(23), 0.25)) * 0.1 });
+    slam($('ann1'), t, B(19), 1.4, 0.25, { r: -7 });
+    slam($('ann2'), t, B(22), 1.5, 0.25, { r: -5 });
+    // tension avant le drop
+    const sh = shake(t, [B(23)], 14);
+    $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+    return;
+  }
+
+  // ===== S4 : DROP, temps 24 → 32 =====
+  if (t < B(32)) {
+    only('s4');
+    $('flash').style.opacity = (1 - pr(t, B(24), 0.14)).toFixed(3);
+    tf($('circ4'), { s: lerp(1.18, 1.0, E.outCubic(pr(t, B(24), 4.2))) });
+    // iris de sortie : le disque bleu nuit avale l'écran
+    const iris = E.inCubic(pr(t, B(31.4), 0.32));
+    tf($('disc4'), { s: lerp(0, 1, E.outBack(pr(t, B(24), 0.42))) + iris * 3.4 + pulse(t, 28, 31, 10) * 0.02 });
+    const lp = pr(t, B(24), 0.5);
+    tf($('logo4'), { s: lerp(2.6, 1, E.outBack(lp)) * (1 + pulse(t, 27, 31, 10) * 0.04) * (1 - iris), r: lerp(-210, 0, E.outCubic(lp)), o: 1 - iris });
+    // lettres C I E qui tombent sur les temps 25, 26, 27
+    [['cieC', 25], ['cieI', 26], ['cieE', 27]].forEach(([id, b]) => {
+      const p = pr(t, B(b), 0.26);
+      tf($(id), { y: lerp(-520, 0, E.outBack(p)), o: t < B(b) ? 0 : 1 - iris, s: 1 - iris * 0.3 });
+    });
+    typeText($('sub4Txt'), "Club Informatique de l'École\nPolytechnique de Ouagadougou", t, B(28), P / 26);
+    $('sub4Txt').style.whiteSpace = 'pre-line';
+    tf($('sub4'), { o: 1 - iris });
+    const rp = pr(t, B(29), 0.3);
+    tf($('ring4'), { s: t < B(29) ? 0 : lerp(1.8, 1, E.outBack(rp)) * (1 - iris), r: -12 + (t - B(29)) * 40, o: 1 - iris });
+    const sh = shake(t, [B(24), B(25), B(26), B(27)], 16);
+    $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+    return;
+  }
+
+  // ===== S5 : passionnés / partage, temps 32 → 40 =====
+  if (t < B(40) + 0.3) {
+    only('s5');
+    rise($('d1'), t, B(32));
+    slam($('d2'), t, B(33), 1.35, 0.28);
+    if (t > B(33) + 0.28) tf($('d2'), { s: 1 + pulse(t, 34, 36, 10) * 0.03 });
+    brush($('brush5'), t, B(34), 0.32);
+    slam($('d3'), t, B(35), 1.5, 0.25, { r: -6 });
+    rise($('d4'), t, B(36));
+    // accolades : fermées au temps 37, s'ouvrent au temps 38 sur PARTAGE
+    const open = E.outBack(pr(t, B(38), 0.34));
+    const bin = E.outBack(pr(t, B(37), 0.25));
+    const gap = lerp(70, 455, open);
+    tf($('brL'), { x: 540 - 75 - gap, s: bin, o: t < B(37) ? 0 : 1 });
+    tf($('brR'), { x: 540 - 75 + gap, s: bin, o: t < B(37) ? 0 : 1 });
+    tf($('d5'), { sx: t < B(38) ? 0 : open * (1 + pulse(t, 39, 40, 10) * 0.05), sy: t < B(38) ? 0 : 1 + pulse(t, 39, 40, 10) * 0.05 });
+    // feuille de papier qui glisse
+    const pp = E.outExpo(pr(t, B(40) - 0.12, 0.4));
+    tf($('paper6'), { x: lerp(1500, 0, pp), r: lerp(14, 0, pp) });
+    if (t >= B(40) + 0.15) only('s6'); else return;
+  }
+
+  // ===== S6 : activités, temps 40 → 56 =====
+  if (t < B(56) + 0.1) {
+    only('s6');
+    rise($('t6'), t, B(40.5), 0.32, 140);
+    slam($('a6'), t, B(42), 1.5, 0.25, { r: -6 });
+    const cards = ['c1','c2','c3','c4'], rots = [-5, 4, -3, 5];
+    const labels = ['Formations', 'Ateliers', 'Code Battle', 'Remises de prix'];
+    const exit = pr(t, B(55.5), 0.45);
+    cards.forEach((id, i) => {
+      const s = B(41 + 4 * i), p = pr(t, s, 0.34);
+      const age = Math.max(0, Math.floor((t - B(41)) / (4 * P)) - i);
+      const ageP = clamp(((t - B(41)) / (4 * P)) - i - 1, 0, 3);
+      const st = E.outCubic(clamp(ageP));
+      const fly = E.inCubic(clamp(exit * 1.6 - (3 - i) * 0.15));
+      tf($(id), {
+        x: -ageP * 34 - (i % 2 ? -1 : 1) * fly * 900, y: -ageP * 26 - fly * 1500,
+        r: lerp(rots[i] + 16, rots[i], E.outBack(p)) + fly * 40 * (i % 2 ? 1 : -1),
+        s: lerp(1.45, 1, E.outBack(p)) * (1 - ageP * 0.04) * (1 + (age === 0 ? pulse(t, 42 + 4 * i, 44 + 4 * i, 10) * 0.02 : 0)),
+        o: t < s ? 0 : 1,
+      });
+      $(id).style.zIndex = 10 + i;
+      // étiquette tapée un temps plus tard
+      const l = $('l' + (i + 1)), ls = B(42 + 4 * i);
+      const live = t >= ls && t < B(45 + 4 * i) + (i === 3 ? 10 : 0);
+      const n = typeText(l.children[0], labels[i], t, ls, P / 10);
+      l.children[1].style.visibility = live && (n < labels[i].length || blink(t)) ? 'visible' : 'hidden';
+      const lp = pr(t, ls, 0.22);
+      const lout = i < 3 ? E.inCubic(pr(t, B(45 + 4 * i) - 0.12, 0.16)) : E.inCubic(clamp(exit * 1.6));
+      tf(l, { x: lout * -1200, r: -3, s: lerp(1.3, 1, E.outBack(lp)), o: t < ls ? 0 : 1 });
+      l.style.zIndex = 30;
+    });
+    const idx = clamp(Math.floor((t - B(41)) / (4 * P)), 0, 3);
+    $('n6').textContent = t >= B(41) ? `0${idx + 1} / 04` : '';
+    tf($('n6'), { o: 1 - exit });
+    tf($('a6'), { r: -6, o: t < B(42) ? 0 : 1 - exit });
+    const sh = shake(t, [41, 45, 49, 53].map(B), 8);
+    $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+    if (t >= B(56)) only('s7'); else return;
+  }
+
+  // ===== S7 : code, temps 56 → 72 =====
+  if (t < B(72)) {
+    only('s7');
+    const winIn = E.outBack(pr(t, B(56) - 0.05, 0.3));
+    const winUp = E.inOutCubic(pr(t, B(63.6), 0.36));
+    tf($('win'), { sy: winIn * lerp(1, 0.62, winUp), sx: lerp(0.2, 1, E.outCubic(pr(t, B(56) - 0.05, 0.3))) * lerp(1, 0.62, winUp), y: lerp(0, -300, winUp) });
+    const ch = codeChars(t);
+    const typing = t < B(62.2);
+    renderCode(ch, typing ? true : (t < B(63) && blink(t)));
+    const click = pulse(t, 63, 64, 14);
+    tf($('run'), { s: 1 - click * 0.25 + E.outBack(pr(t, B(62.5), 0.3)) * 0 , o: t < B(62.4) ? 0 : 1 });
+    rise($('o1'), t, B(64), 0.3, 120); rise($('o2'), t, B(65), 0.3, 120);
+    slam($('o3'), t, B(66), 1.5, 0.3);
+    if (t > B(66) + 0.3) tf($('o3'), { s: 1 + pulse(t, 67, 72, 10) * 0.04 });
+    // interrupteur débutant / expert qui bascule sur chaque temps
+    const tin = E.outBack(pr(t, B(67.5), 0.3));
+    tf($('tog'), { s: tin, o: t < B(67.5) ? 0 : 1 });
+    const flips = clamp(Math.floor((t - SYNC) / P) - 68, -1, 3);
+    let pos = 0;
+    for (let k = 0; k <= flips; k++) pos = (k % 2 === 0) ? E.outBack(pr(t, B(68 + k), 0.2)) : 1 - E.outBack(pr(t, B(68 + k), 0.2));
+    $('knob').style.left = (10 + pos * 290) + 'px';
+    $('tg1').style.color = pos < 0.5 ? '#0b1440' : '#ffffff';
+    $('tg2').style.color = pos >= 0.5 ? '#0b1440' : '#ffffff';
+    const sh = shake(t, [B(64), B(66)], 10);
+    $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+    return;
+  }
+
+  // ===== S8 : experts, montage, ensemble, temps 72 → 88 =====
+  if (t < B(88) + 0.3) {
+    only('s8');
+    $('flash').style.background = '#ee7e1e';
+    $('flash').style.opacity = t < B(72) + 0.1 ? 1 : 0;
+    const inA = t < B(76), inM = t >= B(76) && t < B(84), inC = t >= B(84);
+    show($('g8a'), inA); show($('mont'), inM); show($('g8c'), inC);
+        if (inA) {
+      rise($('e1'), t, B(72) + 0.08); slam($('e2'), t, B(73), 1.35, 0.28);
+      rise($('e3'), t, B(74));
+      slam($('e4'), t, B(75), 1.6, 0.3, { r: -3 });
+    }
+    // montage : une photo par temps, puis deux par temps
+    const order = [0, 1, 2, 3, 4, 5, 0, 2, 3, 1];
+    const starts = [76, 77, 78, 79, 80, 81, 82, 82.5, 83, 83.5].map(B);
+    let cur = -1; starts.forEach((s, i) => { if (t >= s) cur = i; });
+    for (let m = 0; m < 6; m++) show($('m' + m), inM && cur >= 0 && order[cur] === m);
+    if (inM && cur >= 0) {
+      const el = $('m' + order[cur]);
+      tf(el, { s: lerp(1.12, 1.0, E.outCubic(pr(t, starts[cur], 0.5))) });
+    }
+    if (inM) {
+      slam($('mt'), t, B(76), 1.25, 0.25, { r: -2 });
+      if (t > B(76) + 0.25) tf($('mt'), { r: -2, s: 1 + pulse(t, 77, 84, 12) * 0.035 });
+    }
+    if (inC) {
+      slam($('ens'), t, B(84), 1.5, 0.3);
+      if (t > B(84) + 0.3) tf($('ens'), { s: 1 + pulse(t, 85, 88, 10) * 0.04 });
+      brush($('brush8'), t, B(85), 0.32);
+      slam($('ens2'), t, B(86), 1.4, 0.25, { r: -5 });
+    }
+    const w = E.inOutCubic(pr(t, B(88) - 0.3, 0.42));
+    tf($('wipe9'), { y: lerp(2200, -240, w), r: 7 });
+    const sh = shake(t, [B(84)], 18);
+    $('cam').style.transform = `translate(${sh.x.toFixed(1)}px,${sh.y.toFixed(1)}px)`;
+    if (t >= B(88) + 0.12) only('s9'); else return;
+  }
+
+  // ===== S9 : carte de fin, temps 88 → fin =====
+  only('s9');
+  const lp = pr(t, B(88.5), 0.6);
+  tf($('logo9'), { s: lerp(0.4, 1, E.outBackSoft(lp)) * (1 + Math.sin((t - B(88.5)) * 1.6) * 0.008), r: lerp(-30, 0, E.outCubic(lp)), o: t < B(88.5) ? 0 : 1 });
+  rise($('cie9'), t, B(90), 0.4, 90);
+  tf($('cie9'), { y: (1 - E.outExpo(pr(t, B(90), 0.4))) * 120, o: t < B(90) ? 0 : clamp(pr(t, B(90), 0.12)) });
+  tf($('sub9'), { y: (1 - E.outCubic(pr(t, B(91), 0.4))) * 40, o: clamp(pr(t, B(91), 0.3)) });
+  // la devise s'écrit à la main
+  const dp = E.inOutCubic(pr(t, B(92), 2.2 * P));
+  $('dev9Txt').style.clipPath = `inset(-20% ${(100 - dp * 100).toFixed(2)}% -20% 0)`;
+  tf($('dev9'), { x: (1080 - $('dev9').offsetWidth) / 2, r: -4, o: t < B(92) ? 0 : 1 });
+  $('dev9Cur').style.visibility = t >= B(94.3) && blink(t) ? 'visible' : 'hidden';
+  brush($('brush9'), t, B(94.5), 0.4);
+  const jp = pr(t, B(96), 0.3);
+  const jw = $('join9').offsetWidth;
+  tf($('join9'), { x: 540 - jw / 2, s: t < B(96) ? 0 : lerp(1.6, 1, E.outBack(jp)), r: -3, o: t < B(96) ? 0 : 1 });
+  tf($('tag9'), { y: (1 - E.outCubic(pr(t, B(98), 0.5))) * 30, o: clamp(pr(t, B(98), 0.4)) });
+  // dernière seconde : léger fondu vers l'encre
+  const fade = pr(t, DUR - 0.7, 0.7);
+  $('flash').style.background = '#0b1440';
+  $('flash').style.opacity = fade.toFixed(3);
+}
+
+window.render = render;
+window.DUR = DUR;
+document.fonts.ready.then(() => { window.READY = true; render(0); });
+</script>
+</body>
+</html>

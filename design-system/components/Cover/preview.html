@@ -1,0 +1,62 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="fr" data-theme="clair">
+<head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<meta charset="utf-8">
+<title>CIE</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--fond); color: var(--texte); font-family: var(--font-texte); overflow: hidden; }
+  .cover { position: relative; width: 960px; height: 288px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 288px; }
+  .slab { fill: var(--bleu-electrique); }
+  .nuit { fill: var(--bleu-nuit); }
+  .ciel { fill: var(--bleu-ciel); }
+  .spark { fill: var(--orange); }
+  .ombre { fill: var(--encre); }
+  .trace { fill: none; stroke: var(--blanc); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+  .pad { fill: none; stroke: var(--blanc); stroke-width: 3; opacity: .55; }
+  [data-theme="bleu"] .slab { fill: var(--bleu-nuit); }
+  [data-theme="bleu"] .nuit { fill: var(--encre); }
+  .words { position: absolute; left: 48px; bottom: 48px; max-width: 400px; }
+  .name { margin: 0; font-family: var(--font-impact); font-weight: 400; font-size: 120px; line-height: .92; letter-spacing: 1px; color: var(--texte); }
+  .tag { margin: 16px 0 0 3px; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--texte-doux); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="art" aria-hidden="true">
+    <svg viewBox="0 0 480 288" width="480" height="288">
+      <!--
+        blocks      bleu-electrique 216 x 264 slab bled off the top (the poster blue, largest) · bleu-nuit 208 wide bled off right and bottom (the logo ring) · orange disc 112 (the sticker spark, rayon-pilule) · bleu-ciel 136 x 48 tint capping the gap above the dark block · encre offset 8px under the disc (ombre-dure)
+        arrangement one tall slab with a darker block stepped down beside it, the orange disc stuck across their seam like a sticker
+        pattern     circuit traces with pads, from the README's "trame circuit" fond: five traces on a space-3 (24px) pitch, 45 degree bends, white at the grain strength
+        scales      sides in space-1 multiples, gaps space-2, pitch space-3, corners rayon-0 (cut paper), disc rayon-pilule, shadow offset from ombre-dure
+      -->
+      <rect class="slab" x="16" y="-16" width="216" height="264"/>
+      <rect class="nuit" x="248" y="56" width="248" height="248"/>
+      <rect class="ciel" x="248" y="-8" width="136" height="48"/>
+      <path class="trace" d="M40 24 H112 L136 48 V120"/>
+      <circle class="pad" cx="136" cy="126" r="6"/>
+      <path class="trace" d="M64 72 V144 L88 168 H184"/>
+      <circle class="pad" cx="190" cy="168" r="6"/>
+      <path class="trace" d="M208 24 V72 L184 96 V128"/>
+      <circle class="pad" cx="184" cy="134" r="6"/>
+      <path class="trace" d="M280 96 H352 L376 120 V184"/>
+      <circle class="pad" cx="376" cy="190" r="6"/>
+      <path class="trace" d="M424 80 V136 L448 160 H496"/>
+      <circle class="pad" cx="424" cy="74" r="6"/>
+      <circle class="ombre" cx="248" cy="216" r="56"/>
+      <circle class="spark" cx="240" cy="208" r="56"/>
+    </svg>
+  </div>
+  <div class="words">
+    <h1 class="name">CIE</h1>
+    <p class="tag">Club Informatique de l'EPO. Innovons ensemble !</p>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+/* CIE : généré depuis tokens.json */
+
+@font-face { font-family: "Anton"; src: url("fonts/Anton-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Plus Jakarta Sans"; src: url("fonts/PlusJakartaSans-Variable.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Caveat Brush"; src: url("fonts/CaveatBrush-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+:root, [data-theme="clair"] {
+  --bleu-nuit: #122376;
+  --bleu-electrique: #2346e0;
+  --bleu-ciel: #dfe6ff;
+  --orange: #ee7e1e;
+  --blanc: #ffffff;
+  --papier: #f4f6fb;
+  --encre: #0b1440;
+  --fond: var(--blanc);
+  --fond-alt: var(--bleu-ciel);
+  --titre: var(--bleu-electrique);
+  --texte: var(--encre);
+  --texte-doux: #4a5478;
+  --accent: var(--orange);
+  --sur-accent: var(--encre);
+  --trait: #c3cbe6;
+  --ombre-detourage: 0 28px 44px #0b144059;
+  --ombre-carte: 0 12px 24px #0b14402e;
+  --ombre-dure: 8px 8px 0 #0b1440;
+}
+[data-theme="bleu"] {
+  --fond: var(--bleu-electrique);
+  --fond-alt: var(--bleu-nuit);
+  --titre: var(--blanc);
+  --texte: var(--blanc);
+  --texte-doux: #d3dcff;
+  --trait: #5b78ee;
+}
+:root {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+  --marge-affiche: 64px;
+  --bandeau-hauteur: 120px;
+  --rayon-0: 0;
+  --rayon-s: 14px;
+  --rayon-l: 40px;
+  --rayon-pilule: 999px;
+  --font-impact: "Anton", "Bebas Neue", Impact, sans-serif;
+  --font-texte: "Plus Jakarta Sans", "Poppins", system-ui, sans-serif;
+  --font-manuscrite: "Caveat Brush", "Caveat", cursive;
+}
+
+.titre-impact { font-family: var(--font-impact); font-size: 220px; line-height: 0.86; font-weight: 400; letter-spacing: -1px; }
+.titre-impact-m { font-family: var(--font-impact); font-size: 140px; line-height: 0.9; font-weight: 400; }
+.titre-large { font-family: var(--font-texte); font-size: 96px; line-height: 0.98; font-weight: 800; letter-spacing: -3px; }
+.sous-titre { font-family: var(--font-texte); font-size: 44px; line-height: 1.1; font-weight: 700; letter-spacing: -1px; }
+.accroche { font-family: var(--font-texte); font-size: 32px; line-height: 1.3; font-weight: 500; }
+.texte-affiche { font-family: var(--font-texte); font-size: 26px; line-height: 1.4; font-weight: 500; }
+.etiquette { font-family: var(--font-texte); font-size: 22px; line-height: 1; font-weight: 800; letter-spacing: 2px; }
+.mention { font-family: var(--font-texte); font-size: 20px; line-height: 1.3; font-weight: 600; }
+.annotation { font-family: var(--font-manuscrite); font-size: 76px; line-height: 1; font-weight: 400; }
+.annotation-s { font-family: var(--font-manuscrite); font-size: 44px; line-height: 1.05; font-weight: 400; }
